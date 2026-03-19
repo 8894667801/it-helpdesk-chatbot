@@ -9,163 +9,601 @@ const KNOWLEDGE_BASE = {
         title: "Outlook Issues",
         icon: "📧",
         description: "Email, calendar, and Outlook application problems",
-        issues: [
-            {
-                id: "outlook-not-opening",
-                title: "Outlook Not Opening",
-                keywords: ["outlook", "not opening", "won't open", "doesn't open", "can't open", "cannot open", "outlook crash", "not starting", "won't start", "not launching"],
-                symptoms: "Outlook fails to launch, shows an error, or closes immediately after opening.",
+        issues: [\n            {
+                id: "outlook-l3-issue-1",
+                title: "Outlook Stuck on Loading Profile",
+                keywords: ["stuck", "loading profile", "hang", "freezing", "startup"],
+                symptoms: "<strong>Symptoms:</strong> Outlook hangs indefinitely at the splash screen showing 'Loading Profile'.<br><strong>Root Cause:</strong> Corrupt profile registry keys, hung Outlook process, or incompatible add-in.",
                 steps: [
                     {
-                        text: "Close any running instances of Outlook.",
-                        detail: "Press <code>Ctrl + Shift + Esc</code> to open Task Manager. Look for <strong>Microsoft Outlook</strong> under Processes tab. Right-click it and select <strong>End Task</strong>."
-                    },
-                    {
-                        text: "Try opening Outlook in Safe Mode.",
-                        detail: "Press <code>Win + R</code>, type <code>outlook.exe /safe</code> and press Enter. Safe Mode disables add-ins that might be causing the crash."
-                    },
-                    {
-                        text: "If Outlook opens in Safe Mode, disable problematic add-ins.",
-                        detail: "Inside Outlook, go to <strong>File → Options → Add-ins</strong>. At the bottom, select <strong>COM Add-ins</strong> and click <strong>Go</strong>. Uncheck all add-ins and click OK. Restart Outlook normally."
-                    },
-                    {
-                        text: "Repair Microsoft Office installation.",
-                        detail: "Go to <strong>Settings → Apps → Installed Apps</strong>. Find <strong>Microsoft 365</strong> or <strong>Office</strong>, click the three dots (⋯), then <strong>Modify</strong>. Select <strong>Quick Repair</strong> first. If that doesn't work, try <strong>Online Repair</strong>."
-                    },
-                    {
-                        text: "Check for Windows updates.",
-                        detail: "Go to <strong>Settings → Windows Update</strong> and click <strong>Check for updates</strong>. Install any pending updates and restart your PC."
+                        text: "Kill hung processes",
+                        detail: "Open Task Manager and end any running <code>OUTLOOK.EXE</code> processes."
+                    },\n                    {
+                        text: "Start in Safe Mode",
+                        detail: "Run <code>outlook.exe /safe</code>. If it loads, disable all COM Add-ins and re-enable one by one."
+                    },\n                    {
+                        text: "Reset Navigation Pane",
+                        detail: "Run <code>outlook.exe /resetnavpane</code>."
+                    },\n                    {
+                        text: "Disable Hardware Acceleration",
+                        detail: "If able to load, disable hardware graphics acceleration in Options > Advanced."
                     }
                 ],
-                warnings: ["If you choose Online Repair, you'll need an internet connection and it may take 15-30 minutes."],
-                verification: "After following these steps, try opening Outlook normally (not in Safe Mode). It should launch without errors.",
-                escalation: "If Outlook still does not open after repairing Office, contact your IT Admin. They may need to check your mailbox configuration or reinstall Office."
-            },
-            {
-                id: "outlook-stuck-loading",
-                title: "Outlook Stuck on Loading/Processing",
-                keywords: ["outlook stuck", "loading", "processing", "not responding", "frozen", "freezing", "hang", "hanging", "spinning", "loading profile"],
-                symptoms: "Outlook shows 'Loading Profile', 'Processing', or becomes unresponsive after launch.",
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Recreate the Outlook Mail profile via Control Panel > Mail if Safe Mode fails to resolve the stuck screen.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-2",
+                title: "Outlook Application Crashing on Launch",
+                keywords: ["crash", "crashing", "close immediately", "wont open", "fails to open"],
+                symptoms: "<strong>Symptoms:</strong> Outlook opens briefly and closes immediately or throws a 'Microsoft Outlook has stopped working' error.<br><strong>Root Cause:</strong> Corrupted OST file, conflicting third-party antispam/antivirus add-ins, or corrupted Office installation.",
                 steps: [
                     {
-                        text: "Wait for 2-3 minutes.",
-                        detail: "Sometimes Outlook takes extra time to sync if you have a large mailbox or slow connection. Wait a couple of minutes before taking action."
-                    },
-                    {
-                        text: "Force close and restart Outlook.",
-                        detail: "Press <code>Ctrl + Shift + Esc</code> to open Task Manager. End the Outlook process. Wait 10 seconds, then reopen Outlook."
-                    },
-                    {
-                        text: "Open Outlook in Safe Mode.",
-                        detail: "Press <code>Win + R</code>, type <code>outlook.exe /safe</code> and press Enter. If it loads fine, an add-in may be the cause."
-                    },
-                    {
-                        text: "Disable Hardware Graphics Acceleration.",
-                        detail: "In Outlook, go to <strong>File → Options → Advanced</strong>. Check the box <strong>Disable hardware graphics acceleration</strong>. Click OK and restart Outlook."
-                    },
-                    {
-                        text: "Reset the Navigation Pane.",
-                        detail: "Press <code>Win + R</code>, type <code>outlook.exe /resetnavpane</code> and press Enter. This resets the navigation pane to default settings."
+                        text: "Event Viewer Check",
+                        detail: "Check Application event logs for Event ID 1000 pointing to the faulting module (e.g., <code>ucrtbase.dll</code> or add-in DLL)."
+                    },\n                    {
+                        text: "Safe Mode Test",
+                        detail: "Launch holding CTRL to enter Safe Mode. If successful, remove faulting add-in."
+                    },\n                    {
+                        text: "Rename OST File",
+                        detail: "Navigate to <code>%localappdata%\Microsoft\Outlook</code> and rename the OST file to <code>.old</code> to force recreation."
                     }
                 ],
-                warnings: ["Do NOT force-shutdown your PC while Outlook is stuck — this can corrupt your data file."],
-                verification: "Outlook should open normally within 30 seconds and show your inbox without freezing.",
-                escalation: "If Outlook remains stuck even in Safe Mode, contact IT Admin. Your OST file may be too large or corrupted and may need to be recreated."
-            },
-            {
-                id: "outlook-profile-corrupted",
-                title: "Outlook Profile Corrupted",
-                keywords: ["outlook profile", "profile corrupted", "corrupt profile", "profile error", "profile damaged", "profile repair", "create new profile", "repair profile"],
-                symptoms: "Outlook shows errors about profile configuration, asks to choose a profile repeatedly, or behaves erratically.",
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Perform an Online Repair of Microsoft 365 Apps or run Microsoft Support and Recovery Assistant (SaRA).",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-3",
+                title: "Continuous Modern Auth / Password Prompts",
+                keywords: ["password prompt", "keeps asking password", "credentials", "modern auth", "mfa prompt"],
+                symptoms: "<strong>Symptoms:</strong> User is constantly prompted for credentials or MFA, even after checking 'Remember my credentials'.<br><strong>Root Cause:</strong> Cached credentials conflicting in Windows Credential Manager, Modern Authentication disabled, or Primary Refresh Token (PRT) expiration.",
                 steps: [
                     {
-                        text: "Open the Mail settings in Control Panel.",
-                        detail: "Press <code>Win + R</code>, type <code>control</code> and press Enter. In Control Panel, search for <strong>Mail</strong> (or <strong>Mail (Microsoft Outlook)</strong>) and open it."
-                    },
-                    {
-                        text: "Click 'Show Profiles'.",
-                        detail: "In the Mail Setup window, click the <strong>Show Profiles</strong> button to see all existing Outlook profiles."
-                    },
-                    {
-                        text: "Create a new profile.",
-                        detail: "Click <strong>Add</strong>, give the profile a name (e.g., 'New Outlook Profile'), and click OK. Follow the wizard to add your email account."
-                    },
-                    {
-                        text: "Set the new profile as default.",
-                        detail: "Select the new profile and choose <strong>Always use this profile</strong>. Select your new profile from the dropdown."
-                    },
-                    {
-                        text: "Delete the old corrupted profile (optional).",
-                        detail: "Once everything works with the new profile, you can select the old profile and click <strong>Remove</strong> to delete it."
+                        text: "Clear Credential Manager",
+                        detail: "Open Windows Credential Manager and clear all Windows Credentials starting with <code>MicrosoftOffice</code>."
+                    },\n                    {
+                        text: "Clear Identity Cache",
+                        detail: "Delete keys under <code>HKCU\Software\Microsoft\Office\16.0\Common\Identity\Identities</code>."
+                    },\n                    {
+                        text: "Disconnect Work/School Account",
+                        detail: "Go to Settings > Accounts > Access Work or School, disconnect the M365 account, and reconnect."
                     }
                 ],
-                warnings: ["Creating a new profile means Outlook will re-download your emails from the server. This may take time depending on mailbox size.", "Do NOT delete the old profile until you confirm the new one works properly."],
-                verification: "Open Outlook — it should use the new profile and load your mailbox. Verify that emails, calendar, and contacts are accessible.",
-                escalation: "If you can't create a new profile or the wizard fails, contact IT Admin. There may be an issue with your email account configuration on the server."
-            },
-            {
-                id: "outlook-ost-pst",
-                title: "OST/PST File Issues",
-                keywords: ["ost", "pst", "data file", "outlook data", "ost file", "pst file", "scanpst", "repair data", "data file error", "cannot open data file"],
-                symptoms: "Outlook shows errors about data files, cannot open default folders, or shows 'data file cannot be accessed'.",
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Force re-authentication by running <code>dsregcmd /status</code>, clearing cache, and signing back into Office apps.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-4",
+                title: "OST File Reach Maximum Size Limit",
+                keywords: ["ost size", "maximum size", "mailbox full", "cannot expand folder", "large ost"],
+                symptoms: "<strong>Symptoms:</strong> Errors stating 'The Outlook data file has reached the maximum size' or 'Cannot expand the folder'.<br><strong>Root Cause:</strong> The OST file has exceeded the default 50GB limit set by Outlook.",
                 steps: [
                     {
-                        text: "Close Outlook completely.",
-                        detail: "Make sure Outlook is fully closed. Check Task Manager (<code>Ctrl + Shift + Esc</code>) and end any Outlook processes."
-                    },
-                    {
-                        text: "Locate the Inbox Repair Tool (SCANPST.EXE).",
-                        detail: "For Microsoft 365: navigate to <code>C:\\Program Files\\Microsoft Office\\root\\Office16\\</code> and find <strong>SCANPST.EXE</strong>. For older Office versions, the path may vary."
-                    },
-                    {
-                        text: "Run SCANPST.EXE.",
-                        detail: "Double-click SCANPST.EXE. Click <strong>Browse</strong> and navigate to your data file location. Default OST location: <code>C:\\Users\\YourName\\AppData\\Local\\Microsoft\\Outlook\\</code>"
-                    },
-                    {
-                        text: "Start the scan and repair.",
-                        detail: "Click <strong>Start</strong>. The tool will scan for errors. If errors are found, check <strong>Make backup of scanned file before repairing</strong>, then click <strong>Repair</strong>."
-                    },
-                    {
-                        text: "Open Outlook and verify.",
-                        detail: "After the repair completes, open Outlook. Check that your emails and folders are intact."
+                        text: "Check Mailbox Size",
+                        detail: "Verify mailbox size in Exchange Online to see if the user is over their 50GB/100GB limit."
+                    },\n                    {
+                        text: "Adjust Cached Exchange Mode",
+                        detail: "Go to Account Settings and change the 'Keep mail offline for' slider from 'All' to '1 Year' or less."
+                    },\n                    {
+                        text: "Compact OST",
+                        detail: "Go to Data Files > Settings > Advanced > Outlook Data File Settings > Compact Now."
                     }
                 ],
-                warnings: ["Always back up your data file before running the repair tool.", "SCANPST may need to be run multiple times if there are many errors.", "For OST files — if repair doesn't work, you may need to delete the OST and let Outlook recreate it from the server."],
-                verification: "Outlook should open without data file errors. All folders and emails should be accessible.",
-                escalation: "If the repair tool cannot fix the data file, or if data is missing after repair, contact IT Admin immediately."
-            },
-            {
-                id: "outlook-safe-mode",
-                title: "How to Use Outlook Safe Mode",
-                keywords: ["safe mode", "outlook safe mode", "outlook /safe", "start outlook safe", "disable addins"],
-                symptoms: "You need to troubleshoot Outlook by starting it without add-ins and customizations.",
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Reduce cache slider duration, compact the OST file, or increase the MaxLargeFileSize registry key if absolutely necessary.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-5",
+                title: "Search Returning No Results / Incomplete Results",
+                keywords: ["search not working", "no results", "indexing", "search broken", "can't find email"],
+                symptoms: "<strong>Symptoms:</strong> Searching in Outlook returns 'No results found' or only shows emails older than a specific date.<br><strong>Root Cause:</strong> Windows Search Index is corrupted or Outlook is unselected in Indexing Options.",
                 steps: [
                     {
-                        text: "Press Win + R to open Run dialog.",
-                        detail: "Hold down the <strong>Windows key</strong> and press <strong>R</strong> to open the Run dialog box."
-                    },
-                    {
-                        text: "Type the Safe Mode command.",
-                        detail: "Type <code>outlook.exe /safe</code> and press <strong>Enter</strong>."
-                    },
-                    {
-                        text: "Select your profile if prompted.",
-                        detail: "If you have multiple profiles, select the one you want to use and click OK."
-                    },
-                    {
-                        text: "Outlook will open in Safe Mode.",
-                        detail: "You'll see <strong>[Safe Mode]</strong> in the title bar. All add-ins are disabled, and the reading pane may be turned off."
-                    },
-                    {
-                        text: "Disable problematic add-ins.",
-                        detail: "Go to <strong>File → Options → Add-ins</strong>. At the bottom, click <strong>Go</strong> next to COM Add-ins. Uncheck suspicious add-ins and click OK."
+                        text: "Check Indexing Status",
+                        detail: "Click Search > Search Tools > Indexing Status. Check if items are remaining to be indexed."
+                    },\n                    {
+                        text: "Verify Outlook is Indexed",
+                        detail: "Open Windows Indexing Options and ensure 'Microsoft Outlook' is checked."
+                    },\n                    {
+                        text: "Rebuild Index",
+                        detail: "In Indexing Options > Advanced, click 'Rebuild' (this may take several hours)."
                     }
                 ],
-                warnings: ["Safe Mode is for troubleshooting only. Some features may not work in Safe Mode."],
-                verification: "If Outlook works fine in Safe Mode but crashes normally, the issue is caused by an add-in. Re-enable add-ins one by one to find the culprit.",
-                escalation: "If Outlook crashes even in Safe Mode, the issue is deeper than add-ins. Contact IT Admin for further investigation."
-            }
-        ]
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> If rebuilding fails, repair the Office installation or switch off 'Improve search speed by limiting the number of results shown'.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-6",
+                title: "Shared Mailbox Not Updating",
+                keywords: ["shared mailbox", "not updating", "not syncing", "stuck updating", "delay"],
+                symptoms: "<strong>Symptoms:</strong> Emails sent to a shared mailbox do not appear, or folders show outdated content compared to Outlook Web (OWA).<br><strong>Root Cause:</strong> Folders within the shared mailbox have hit the 500-folder limit, or the OST file is too large to sync changes efficiently.",
+                steps: [
+                    {
+                        text: "Compare OWA",
+                        detail: "Verify if the missing emails appear in OWA. If yes, it's a client sync issue."
+                    },\n                    {
+                        text: "Disable Download Shared Folders",
+                        detail: "Go to Account Settings > More Settings > Advanced. Uncheck 'Download shared folders'."
+                    },\n                    {
+                        text: "Update Folder Manually",
+                        detail: "Go to the Send/Receive tab and click 'Update Folder'."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Unchecking 'Download shared folders' forces Outlook to read the shared mailbox directly from Exchange Online, resolving the sync issue.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-7",
+                title: "Cannot Open Shared Calendar or Permissions Error",
+                keywords: ["shared calendar", "no permission", "cannot open calendar", "delegation"],
+                symptoms: "<strong>Symptoms:</strong> Unable to view a colleague's calendar, or receiving 'You do not have permission to view this calendar' despite being given access.<br><strong>Root Cause:</strong> Calendar permissions not fully replicated in Exchange Online, or corruption in the local Free/Busy cache.",
+                steps: [
+                    {
+                        text: "Verify OWA Access",
+                        detail: "Check if the user can open the shared calendar in Outlook Web App."
+                    },\n                    {
+                        text: "Remove and Re-add",
+                        detail: "Right-click the calendar, select 'Delete Calendar', and re-add it from the Global Address List."
+                    },\n                    {
+                        text: "Check Exchange Permissions",
+                        detail: "Verify via Exchange Admin Center or PowerShell (<code>Get-MailboxFolderPermission</code>) that the user has Reviewer access or higher."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Remove the calendar from the client. Enable 'Turn on shared calendar improvements' in Account Settings > Advanced, and re-add.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-8",
+                title: "Outlook Disconnected from Exchange",
+                keywords: ["disconnected", "trying to connect", "offline", "not connected"],
+                symptoms: "<strong>Symptoms:</strong> Status bar shows 'Disconnected' or 'Trying to connect...' continuously.<br><strong>Root Cause:</strong> Network DNS failure, proxy interfering with Autodiscover/MAPI, or stale network adapter configurations.",
+                steps: [
+                    {
+                        text: "Check Toggle Status",
+                        detail: "Ensure 'Work Offline' is not toggled ON in the Send/Receive ribbon."
+                    },\n                    {
+                        text: "Ping M365 Endpoints",
+                        detail: "Ping <code>outlook.office365.com</code> to verify DNS resolution."
+                    },\n                    {
+                        text: "Flush DNS",
+                        detail: "Run <code>ipconfig /flushdns</code> from Command Prompt."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Re-authenticate using Modern Auth (clear credentials if needed) or switch networks (e.g., disconnect from VPN) to restore connection.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-9",
+                title: "Autodiscover Failing During Profile Setup",
+                keywords: ["setup profile", "autodiscover", "cannot setup email", "cannot connect exchange"],
+                symptoms: "<strong>Symptoms:</strong> When adding a new account, Outlook fails to find the server settings automatically and errors out.<br><strong>Root Cause:</strong> Local AD SCP lookup failing in hybrid environments, or DNS CNAME for Autodiscover is misconfigured.",
+                steps: [
+                    {
+                        text: "Bypass SCP Lookup",
+                        detail: "Add Registry Key <code>ExcludeScpLookup</code> under <code>HKCU\Software\Microsoft\Office\16.0\Outlook\AutoDiscover</code> and set to 1."
+                    },\n                    {
+                        text: "Use Microsoft Remote Connectivity Analyzer",
+                        detail: "Run the Outlook Connectivity test at testconnectivity.microsoft.com to pinpoint DNS/Auth failures."
+                    },\n                    {
+                        text: "Create Profile via Mail Applet",
+                        detail: "Use Control Panel > Mail instead of the Outlook startup wizard."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Bypass local AD SCP lookups via Registry or fix the external DNS Autodiscover CNAME pointing to <code>autodiscover.outlook.com</code>.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-10",
+                title: "Send/Receive Error 0x8004010F",
+                keywords: ["0x8004010F", "send receive error", "cannot access data file", "data file cannot be accessed"],
+                symptoms: "<strong>Symptoms:</strong> Sending/receiving emails fails with error '0x8004010F: Outlook data file cannot be accessed'.<br><strong>Root Cause:</strong> Corrupted Outlook profile or the OST/PST file is no longer accessible/linked correctly.",
+                steps: [
+                    {
+                        text: "Locate Data File",
+                        detail: "Go to Account Settings > Data Files. Check the exact path of the default delivery location."
+                    },\n                    {
+                        text: "Re-link Data File",
+                        detail: "Click 'Change Folder' on the Email tab, select a temporary folder, then change it back to the correct Inbox."
+                    },\n                    {
+                        text: "Run SCANPST",
+                        detail: "If the file is a PST, run SCANPST.EXE to repair file structure."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Create a completely new Outlook Mail Profile and let Exchange recreate the fresh OST file to permanently fix the link.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-11",
+                title: "Missing Folders / Folders Not Visible",
+                keywords: ["missing folder", "folder disappeared", "cant find folder", "subfolders missing"],
+                symptoms: "<strong>Symptoms:</strong> User creates a folder in OWA or another device, but it does not appear in the Outlook Desktop client.<br><strong>Root Cause:</strong> Folder hierarchy sync failure or 'Folder View' is filtered.",
+                steps: [
+                    {
+                        text: "Check Folder List Mode",
+                        detail: "Press <code>CTRL + 6</code> to switch to 'Folder List' view to see if it's hidden under a different parent."
+                    },\n                    {
+                        text: "Reset View",
+                        detail: "Run <code>outlook.exe /cleanviews</code> to reset all custom folder views."
+                    },\n                    {
+                        text: "Clear Offline Items",
+                        detail: "Right-click the Inbox or parent folder > Properties > General > click 'Clear Offline Items', then Update Folder."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Clear Offline Items on the parent folder to force Outlook to re-download the folder hierarchy from Exchange.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-12",
+                title: "Out of Office (OOF) Not Saving / Server Unreachable",
+                keywords: ["out of office", "automatic replies", "server unavailable", "cannot be displayed"],
+                symptoms: "<strong>Symptoms:</strong> Clicking Automatic Replies shows 'Your automatic reply settings cannot be displayed because the server is currently unavailable'.<br><strong>Root Cause:</strong> EWS (Exchange Web Services) is blocked or the primary SMTP address does not match the UPN in a hybrid setup.",
+                steps: [
+                    {
+                        text: "Check via OWA",
+                        detail: "Verify if OOF can be set via Outlook Web App. If yes, the issue is client-side EWS connection."
+                    },\n                    {
+                        text: "Check Connection Status",
+                        detail: "CTRL + Right-click Outlook icon in system tray > Connection Status. Check for EWS connection failures."
+                    },\n                    {
+                        text: "Verify Autodiscover",
+                        detail: "Run 'Test E-mail AutoConfiguration' (CTRL + Right-click tray icon) and check the OOF URL."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Correct UPN/Primary SMTP mismatch in Active Directory, or bypass proxy servers blocking EWS endpoints.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-13",
+                title: "Outlook Rules Not Firing / Corrupted",
+                keywords: ["rules not working", "rules broken", "inbox rules", "client-only rule"],
+                symptoms: "<strong>Symptoms:</strong> Emails are not being moved to folders automatically, or opening Rules gives an error about space limitations.<br><strong>Root Cause:</strong> Exceeded the 256KB rules quota limit in Exchange, or rules contain corrupted 'client-only' actions.",
+                steps: [
+                    {
+                        text: "Check Rules Quota",
+                        detail: "Increase rules limit via PowerShell: <code>Set-Mailbox -RulesQuota 256KB</code> (if at 64KB)."
+                    },\n                    {
+                        text: "Export and Delete",
+                        detail: "Export rules to an .rwz file as a backup, then run <code>outlook.exe /cleanrules</code> to wipe all local/server rules."
+                    },\n                    {
+                        text: "Recreate Rules from OWA",
+                        detail: "Recreate critical server-side rules in OWA to ensure they run even when Outlook is closed."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Wipe corrupted rules using `/cleanrules` and recreate them, preferably Server-side via OWA, keeping under the quote limit.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-14",
+                title: "Address Book (OAB) Not Updating",
+                keywords: ["offline address book", "oab", "global address list", "gal", "new user not showing"],
+                symptoms: "<strong>Symptoms:</strong> New hires do not show up in the Outlook Address Book, or user details (phone/title) are outdated.<br><strong>Root Cause:</strong> Offline Address Book (OAB) is out of sync or failed to download from the Exchange server.",
+                steps: [
+                    {
+                        text: "Force Download",
+                        detail: "Go to Send/Receive > Send/Receive Groups > Download Address Book. Uncheck 'Download changes since last Send/Receive'."
+                    },\n                    {
+                        text: "Delete Local OAB files",
+                        detail: "Navigate to <code>%localappdata%\Microsoft\Outlook\Offline Address Books</code> and delete the folder contents."
+                    },\n                    {
+                        text: "Check OWA",
+                        detail: "Verify the Global Address List in OWA. If correct there, the client needs fresh OAB generation."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Deleting the local OAB files and forcing a full manually download forces Outlook to rebuild the address list from scratch.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-15",
+                title: "Freezing When Typing or Switching Folders",
+                keywords: ["freezing", "laggy", "typing delay", "slow to switch folders", "not responding"],
+                symptoms: "<strong>Symptoms:</strong> Outlook frequently shows 'Not Responding' for a few seconds when switching folders or composing emails.<br><strong>Root Cause:</strong> Large OST file, high folder count, or aggressive antivirus scanning of OST files in real-time.",
+                steps: [
+                    {
+                        text: "Exclude OST from AV",
+                        detail: "Ensure anti-virus is configured to exclude <code>*.ost</code> and <code>*.pst</code> files from real-time scanning."
+                    },\n                    {
+                        text: "Reduce Cached Time",
+                        detail: "Slider to 6 months or 1 year in Cached Exchange Mode settings."
+                    },\n                    {
+                        text: "Check Add-ins",
+                        detail: "Disable CRM, PDF, or dictation add-ins temporarily to see if performance improves."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Reduce OST size and add AV exclusions for Outlook data files.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-16",
+                title: "Third-Party Add-in Disabling Repeatedly",
+                keywords: ["add-in disabled", "crm add-in", "teams addin", "plugin missing"],
+                symptoms: "<strong>Symptoms:</strong> A required add-in (like Salesforce, Zoom, or Teams) gets disabled every time Outlook restarts.<br><strong>Root Cause:</strong> Outlook detects the add-in slowing down startup by more than 1000ms and hard-disables it.",
+                steps: [
+                    {
+                        text: "Force Enable in Outlook",
+                        detail: "Go to File > Slow and Disabled COM Add-ins. Select 'Always enable this add-in'."
+                    },\n                    {
+                        text: "Modify Registry Resiliency",
+                        detail: "Navigate to <code>HKCU\Software\Policies\Microsoft\Office\16.0\Outlook\Resiliency\AddinList</code>. Add a String value with the Add-in ProgID and set it to '1' (Always Enabled)."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Deploy the 'Always Enable' registry key via Group Policy/Intune to prevent Outlook from auto-disabling critical business add-ins.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-17",
+                title: "Licensing Errors / Unlicensed Product",
+                keywords: ["unlicensed product", "activation", "license missing", "deactivated"],
+                symptoms: "<strong>Symptoms:</strong> Title bar says '(Unlicensed Product)' and functionality is restricted to Read-Only mode.<br><strong>Root Cause:</strong> Cached activation tokens are invalid, or computer has lost trust with Azure AD.",
+                steps: [
+                    {
+                        text: "Sign out of Office",
+                        detail: "In Word/Outlook, go to File > Account > Sign Out, and close all Office apps."
+                    },\n                    {
+                        text: "Run OSPP.vbs script",
+                        detail: "Run <code>cscript ospp.vbs /dstatus</code> to find the 5-digit product key and use <code>/unpkey:XXXXX</code> to remove stale keys."
+                    },\n                    {
+                        text: "Clear BrokerPlugin Data",
+                        detail: "Rename the identity folder in <code>%localappdata%\Packages\Microsoft.AAD.BrokerPlugin...</code>"
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Clear old licenses using OSPP.vbs, clear Windows Credentials, and sign back in to force a fresh activation token from M365.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-18",
+                title: "Attachments Blocked or Cannot Open",
+                keywords: ["blocked attachment", "unsafe file", "cannot open attachment", "pdf opening error"],
+                symptoms: "<strong>Symptoms:</strong> Replaces attachments with 'Outlook blocked access to the following potentially unsafe attachments'.<br><strong>Root Cause:</strong> File type is restricted (e.g. .exe, .js, .mde), or temporary internet files folder is full/corrupt.",
+                steps: [
+                    {
+                        text: "Clear OutlookSecureTempFolder",
+                        detail: "Lookup <code>OutlookSecureTempFolder</code> in Registry, navigate to that path, and delete all contents."
+                    },\n                    {
+                        text: "Zip the File",
+                        detail: "Instruct sender to compress restricted extensions into a .zip file."
+                    },\n                    {
+                        text: "Unblock Level 1 Files",
+                        detail: "If business-critical, modify <code>Level1Remove</code> registry key to allow specific extensions (Not recommended for security)."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Clear the SecureTempFolder registry path contents if attachments give 'Cannot create file' errors. Otherwise, zip restricted files.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-19",
+                title: "Reminders Not Popping Up",
+                keywords: ["reminders missing", "no notifications", "meeting missed", "calendar popups"],
+                symptoms: "<strong>Symptoms:</strong> Meeting reminders fail to pop up, causing users to miss scheduled meetings.<br><strong>Root Cause:</strong> Corrupted reminders folder or Windows Focus Assist blocking notifications.",
+                steps: [
+                    {
+                        text: "Clean Reminders",
+                        detail: "Close Outlook and run <code>outlook.exe /cleanreminders</code>."
+                    },\n                    {
+                        text: "Check Windows Notifications",
+                        detail: "Go to Windows Settings > System > Notifications. Ensure Outlook notifications are ON and Focus Assist/Do Not Disturb is OFF."
+                    },\n                    {
+                        text: "Verify Outlook Setting",
+                        detail: "File > Options > Advanced. Ensure 'Show reminders' is checked."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Running `/cleanreminders` recreates the internal reminders queue and usually restores proper popup functionality.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-20",
+                title: "Sent Items Not Saving in Shared Mailboxes",
+                keywords: ["sent item missing", "shared mailbox sent", "copy of sent item"],
+                symptoms: "<strong>Symptoms:</strong> When sending 'As' a shared mailbox, the sent email goes to the User's primary Sent Items, not the Shared Mailbox Sent Items.<br><strong>Root Cause:</strong> By default, Outlook saves items sent as a delegate to the primary mailbox.",
+                steps: [
+                    {
+                        text: "Registry Fix for Sent Items",
+                        detail: "Add DWORD <code>DelegateSentItemsStyle</code> = 1 in <code>HKCU\Software\Microsoft\Office\16.0\Outlook\Preferences</code>."
+                    },\n                    {
+                        text: "Exchange PowerShell Fix",
+                        detail: "Run <code>Set-Mailbox -Identity shared@domain.com -MessageCopyForSentAsEnabled $true</code> as Admin."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Use the Exchange PowerShell command (preferred enterprise method) to automatically copy sent items into the Shared Mailbox Sent folder.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-21",
+                title: "Recovering Deleted Items Fails",
+                keywords: ["recover deleted", "missing email", "permanent delete", "dumpster"],
+                symptoms: "<strong>Symptoms:</strong> User accidentally shift-deleted an email and it cannot be found in the Deleted Items folder.<br><strong>Root Cause:</strong> Item has moved to the Recoverable Items (Dumpster) partition.",
+                steps: [
+                    {
+                        text: "Open Recover Deleted Items",
+                        detail: "Go to Folder tab > click 'Recover Deleted Items'."
+                    },\n                    {
+                        text: "Search via OWA",
+                        detail: "Sometimes OWA's Recover Deleted Items interface is more reliable than the Outlook client."
+                    },\n                    {
+                        text: "Admin eDiscovery",
+                        detail: "If past the 14-day default window, an Admin must perform an eDiscovery search (if Litigation Hold is enabled)."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Select the item in the 'Recover Deleted Items' dialog and choose 'Restore Selected Items'. It goes back to the original folder.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-22",
+                title: "Teams Meeting Add-in Missing",
+                keywords: ["teams addin", "no teams button", "missing meeting link", "skype addin"],
+                symptoms: "<strong>Symptoms:</strong> The 'New Teams Meeting' button disappears from the Outlook Calendar ribbon.<br><strong>Root Cause:</strong> Add-in was disabled by Outlook for load times, or Teams was installed without Admin privileges.",
+                steps: [
+                    {
+                        text: "Re-enable in Add-ins",
+                        detail: "File > Options > Add-ins. Change Manage drop-down to Disabled Items, click Go. Re-enable Teams Add-in."
+                    },\n                    {
+                        text: "Re-register DLL",
+                        detail: "Close Outlook. Re-register <code>Microsoft.Teams.AddinLoader.dll</code> using <code>regsvr32</code>."
+                    },\n                    {
+                        text: "Restart Teams",
+                        detail: "Fully quit Teams from system tray, restart Teams, then restart Outlook."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Go to Disabled Items, re-enable the Microsoft Teams Meeting Add-in, and check the COM Add-ins list to ensure it is checked.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-23",
+                title: "Signatures Missing After Upgrading",
+                keywords: ["missing signature", "signature blank", "roaming signatures"],
+                symptoms: "<strong>Symptoms:</strong> Clicking the Signature button does nothing, or all previous signatures are gone.<br><strong>Root Cause:</strong> Microsoft's new 'Cloud Roaming Signatures' feature conflicts with locally stored `%appdata%\Microsoft\Signatures`.",
+                steps: [
+                    {
+                        text: "Check Local Path",
+                        detail: "Verify if the `.htm` and `.rtf` signature files still exist in the AppData pathway."
+                    },\n                    {
+                        text: "Disable Roaming Signatures",
+                        detail: "Set Registry DWORD <code>DisableRoamingSignaturesTemporaryToggle</code> = 1 under <code>HKCU\Software\Microsoft\Office\16.0\Outlook\Setup</code>."
+                    },\n                    {
+                        text: "Recreate Signatures",
+                        detail: "If missing completely, the user must recreate them via File > Options > Mail > Signatures."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Add the Registry key to disable Cloud Signatures if enterprise local-signature scripts are failing to apply.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-24",
+                title: "Mail Stuck in Outbox",
+                keywords: ["stuck in outbox", "not sending", "email pending", "large attachment"],
+                symptoms: "<strong>Symptoms:</strong> Emails sit in the Outbox and show a status of transmitting but never leave.<br><strong>Root Cause:</strong> An email with a huge attachment is choking the queue, or the OST file is corrupted.",
+                steps: [
+                    {
+                        text: "Work Offline",
+                        detail: "Go to Send/Receive tab, click 'Work Offline'. Restart Outlook."
+                    },\n                    {
+                        text: "Move/Delete Stuck Email",
+                        detail: "While offline, open the Outbox, move the stuck email to Drafts or delete it. Turn off 'Work Offline'."
+                    },\n                    {
+                        text: "Check Attachment Size",
+                        detail: "Ensure attachments do not exceed the 35MB standard Exchange limit."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Toggle to Work Offline mode to release the lock on the Outbox, delete the large email, and reconnect to clear the queue.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-25",
+                title: "VPN / Proxy Blocking Connection",
+                keywords: ["vpn issue", "proxy error", "network block", "no connection offsite"],
+                symptoms: "<strong>Symptoms:</strong> Outlook is disconnected when working remotely on VPN, but works fine on the corporate network.<br><strong>Root Cause:</strong> Split-tunneling is misconfigured, or MTU size over VPN truncates Outlook RPC/MAPI packets.",
+                steps: [
+                    {
+                        text: "Test Off-VPN",
+                        detail: "Disconnect from VPN. If it connects, the VPN firewall is blocking M365 IPs."
+                    },\n                    {
+                        text: "M365 Network Connectivity Test",
+                        detail: "Run <code>connectivity.office.com</code> to verify proxy bypass rules are active for <code>Optimize</code> category endpoints."
+                    },\n                    {
+                        text: "Check Proxy Settings",
+                        detail: "Ensure 'Bypass proxy server for local addresses' is set in Internet Options."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Work with the Network team to bypass all Microsoft 365 <code>Optimize</code> endpoints from VPN forced-tunneling and SSL Inspection.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-26",
+                title: "New Outlook Toggle Reverting to Classic",
+                keywords: ["new outlook", "toggle missing", "reverts classic", "new outlook beta"],
+                symptoms: "<strong>Symptoms:</strong> User tries to toggle 'Try the New Outlook', but it immediately flips back or fails to install.<br><strong>Root Cause:</strong> The New Outlook installation is blocked by Group Policy, AppLocker, or the mailbox is hosted on an unsupported On-Premise Exchange.",
+                steps: [
+                    {
+                        text: "Verify Exchange Hosting",
+                        detail: "Ensure the mailbox is fully migrated to Exchange Online (M365). New Outlook does not support legacy on-prem servers yet."
+                    },\n                    {
+                        text: "Check GPO",
+                        detail: "Verify if the registry key <code>HideNewOutlookToggle</code> is set to 1."
+                    },\n                    {
+                        text: "Manual Install",
+                        detail: "Install 'Outlook for Windows' manually from the Microsoft Store."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Ensure mailbox is M365-hosted and manually install the UWP Outlook app from the Store if the toggle is broken.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-27",
+                title: "Images Not Downloading in Emails",
+                keywords: ["red x", "images missing", "pictures not downloading", "blocked content"],
+                symptoms: "<strong>Symptoms:</strong> Emails display red 'X' icons instead of pictures. Clicking 'Download Pictures' does nothing.<br><strong>Root Cause:</strong> Trust Center settings restrict auto-download, or the IE/Edge temporary internet cache path is invalid.",
+                steps: [
+                    {
+                        text: "Trust Center Check",
+                        detail: "File > Options > Trust Center > Trust Center Settings > Automatic Download. Uncheck 'Don't download pictures automatically'."
+                    },\n                    {
+                        text: "Check IE Cache",
+                        detail: "In Internet Options > General > Browsing history settings, check if the Current location path is valid. Move the folder to Default if necessary."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Fix the corrupted Internet Temporary Files folder path in Windows Internet Options, which Outlook uses to process downloaded images.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-28",
+                title: "Font Size Changes Suddenly / Zoom Issue",
+                keywords: ["font too small", "zoom out", "text tiny", "huge font", "reading pane text"],
+                symptoms: "<strong>Symptoms:</strong> The text in the Reading Pane or composed emails is extremely tiny or huge.<br><strong>Root Cause:</strong> The Zoom level in the reading pane was accidentally changed with CTRL + Mouse Wheel.",
+                steps: [
+                    {
+                        text: "Reset Zoom via Ribbon",
+                        detail: "Open an email, go to the Message/Format Text tab, click Zoom, and select 100%."
+                    },\n                    {
+                        text: "Mouse Wheel Fix",
+                        detail: "Click inside the Reading Pane, hold CTRL, and spin the mouse wheel to resize text dynamically."
+                    },\n                    {
+                        text: "Zoom Slider",
+                        detail: "Check the bottom right corner of the Outlook window for the Zoom slider."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Set Zoom back to 100% and tick 'Remember my preference' so it applies to all future emails.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-29",
+                title: "Delegation: 'Cannot open the folders' Error",
+                keywords: ["delegate error", "boss calendar", "assistant permissions", "cannot open"],
+                symptoms: "<strong>Symptoms:</strong> An assistant (Delegate) gets 'Cannot open the folders' when trying to manage their manager's Inbox.<br><strong>Root Cause:</strong> Delegate given access to Inbox, but NOT given 'Folder Visible' permission on the Root Mailbox folder.",
+                steps: [
+                    {
+                        text: "Set Root Permissions",
+                        detail: "Manager must right-click their main email address at the top of the folder list > Properties > Permissions > Add Delegate > assign 'Folder visible' only."
+                    },\n                    {
+                        text: "Verify Inbox Permissions",
+                        detail: "Ensure the actual Inbox folder has Editor access assigned."
+                    },\n                    {
+                        text: "Restart Client",
+                        detail: "Delegate restarts Outlook to pull updated ACLs."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Assign 'Folder Visible' permission on the 'Top of Information Store' (Root folder) to allow the delegate to map the subfolders correctly.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            },\n            {
+                id: "outlook-l3-issue-30",
+                title: "PST Password Lost or Forgotten",
+                keywords: ["pst password", "forgot password", "unlock pst", "archive password"],
+                symptoms: "<strong>Symptoms:</strong> User opens an Archive .pst file but doesn't know the password locking it.<br><strong>Root Cause:</strong> User set a password on their personal local archive and forgot it.",
+                steps: [
+                    {
+                        text: "Third-Party Tools",
+                        detail: "Microsoft does NOT provide a native PST password recovery tool. A third-party tool like 'NirSoft PstPassword' is required to strip the hashing."
+                    },\n                    {
+                        text: "Compliance Check",
+                        detail: "Verify enterprise security policy before running password-cracking tools on PST files."
+                    },\n                    {
+                        text: "Restore from Backup",
+                        detail: "If cracking fails, check Volume Shadow Copies (Previous Versions) prior to the password being set."
+                    }
+                ],
+                warnings: ["For L3 Administrators / Senior Support context."],
+                verification: "<strong>Resolution:</strong> Use authorized third-party recovery utilities to strip the weak CRC32 hash from the PST file if corporate policy permits.",
+                escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
+            }\n        ]
     },
 
     windows: {
