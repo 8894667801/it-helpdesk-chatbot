@@ -9,7 +9,8 @@ const KNOWLEDGE_BASE = {
         title: "Outlook Issues",
         icon: "📧",
         description: "Email, calendar, and Outlook application problems",
-        issues: [\n            {
+        issues: [
+            {
                 id: "outlook-l3-issue-1",
                 title: "Outlook Stuck on Loading Profile",
                 keywords: ["stuck", "loading profile", "hang", "freezing", "startup"],
@@ -18,13 +19,16 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Kill hung processes",
                         detail: "Open Task Manager and end any running <code>OUTLOOK.EXE</code> processes."
-                    },\n                    {
+                    },
+                    {
                         text: "Start in Safe Mode",
                         detail: "Run <code>outlook.exe /safe</code>. If it loads, disable all COM Add-ins and re-enable one by one."
-                    },\n                    {
+                    },
+                    {
                         text: "Reset Navigation Pane",
                         detail: "Run <code>outlook.exe /resetnavpane</code>."
-                    },\n                    {
+                    },
+                    {
                         text: "Disable Hardware Acceleration",
                         detail: "If able to load, disable hardware graphics acceleration in Options > Advanced."
                     }
@@ -32,7 +36,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Recreate the Outlook Mail profile via Control Panel > Mail if Safe Mode fails to resolve the stuck screen.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-2",
                 title: "Outlook Application Crashing on Launch",
                 keywords: ["crash", "crashing", "close immediately", "wont open", "fails to open"],
@@ -41,10 +46,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Event Viewer Check",
                         detail: "Check Application event logs for Event ID 1000 pointing to the faulting module (e.g., <code>ucrtbase.dll</code> or add-in DLL)."
-                    },\n                    {
+                    },
+                    {
                         text: "Safe Mode Test",
                         detail: "Launch holding CTRL to enter Safe Mode. If successful, remove faulting add-in."
-                    },\n                    {
+                    },
+                    {
                         text: "Rename OST File",
                         detail: "Navigate to <code>%localappdata%\Microsoft\Outlook</code> and rename the OST file to <code>.old</code> to force recreation."
                     }
@@ -52,7 +59,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Perform an Online Repair of Microsoft 365 Apps or run Microsoft Support and Recovery Assistant (SaRA).",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-3",
                 title: "Continuous Modern Auth / Password Prompts",
                 keywords: ["password prompt", "keeps asking password", "credentials", "modern auth", "mfa prompt"],
@@ -61,10 +69,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Clear Credential Manager",
                         detail: "Open Windows Credential Manager and clear all Windows Credentials starting with <code>MicrosoftOffice</code>."
-                    },\n                    {
+                    },
+                    {
                         text: "Clear Identity Cache",
                         detail: "Delete keys under <code>HKCU\Software\Microsoft\Office\16.0\Common\Identity\Identities</code>."
-                    },\n                    {
+                    },
+                    {
                         text: "Disconnect Work/School Account",
                         detail: "Go to Settings > Accounts > Access Work or School, disconnect the M365 account, and reconnect."
                     }
@@ -72,7 +82,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Force re-authentication by running <code>dsregcmd /status</code>, clearing cache, and signing back into Office apps.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-4",
                 title: "OST File Reach Maximum Size Limit",
                 keywords: ["ost size", "maximum size", "mailbox full", "cannot expand folder", "large ost"],
@@ -81,10 +92,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Check Mailbox Size",
                         detail: "Verify mailbox size in Exchange Online to see if the user is over their 50GB/100GB limit."
-                    },\n                    {
+                    },
+                    {
                         text: "Adjust Cached Exchange Mode",
                         detail: "Go to Account Settings and change the 'Keep mail offline for' slider from 'All' to '1 Year' or less."
-                    },\n                    {
+                    },
+                    {
                         text: "Compact OST",
                         detail: "Go to Data Files > Settings > Advanced > Outlook Data File Settings > Compact Now."
                     }
@@ -92,7 +105,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Reduce cache slider duration, compact the OST file, or increase the MaxLargeFileSize registry key if absolutely necessary.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-5",
                 title: "Search Returning No Results / Incomplete Results",
                 keywords: ["search not working", "no results", "indexing", "search broken", "can't find email"],
@@ -101,10 +115,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Check Indexing Status",
                         detail: "Click Search > Search Tools > Indexing Status. Check if items are remaining to be indexed."
-                    },\n                    {
+                    },
+                    {
                         text: "Verify Outlook is Indexed",
                         detail: "Open Windows Indexing Options and ensure 'Microsoft Outlook' is checked."
-                    },\n                    {
+                    },
+                    {
                         text: "Rebuild Index",
                         detail: "In Indexing Options > Advanced, click 'Rebuild' (this may take several hours)."
                     }
@@ -112,7 +128,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> If rebuilding fails, repair the Office installation or switch off 'Improve search speed by limiting the number of results shown'.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-6",
                 title: "Shared Mailbox Not Updating",
                 keywords: ["shared mailbox", "not updating", "not syncing", "stuck updating", "delay"],
@@ -121,10 +138,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Compare OWA",
                         detail: "Verify if the missing emails appear in OWA. If yes, it's a client sync issue."
-                    },\n                    {
+                    },
+                    {
                         text: "Disable Download Shared Folders",
                         detail: "Go to Account Settings > More Settings > Advanced. Uncheck 'Download shared folders'."
-                    },\n                    {
+                    },
+                    {
                         text: "Update Folder Manually",
                         detail: "Go to the Send/Receive tab and click 'Update Folder'."
                     }
@@ -132,7 +151,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Unchecking 'Download shared folders' forces Outlook to read the shared mailbox directly from Exchange Online, resolving the sync issue.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-7",
                 title: "Cannot Open Shared Calendar or Permissions Error",
                 keywords: ["shared calendar", "no permission", "cannot open calendar", "delegation"],
@@ -141,10 +161,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Verify OWA Access",
                         detail: "Check if the user can open the shared calendar in Outlook Web App."
-                    },\n                    {
+                    },
+                    {
                         text: "Remove and Re-add",
                         detail: "Right-click the calendar, select 'Delete Calendar', and re-add it from the Global Address List."
-                    },\n                    {
+                    },
+                    {
                         text: "Check Exchange Permissions",
                         detail: "Verify via Exchange Admin Center or PowerShell (<code>Get-MailboxFolderPermission</code>) that the user has Reviewer access or higher."
                     }
@@ -152,7 +174,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Remove the calendar from the client. Enable 'Turn on shared calendar improvements' in Account Settings > Advanced, and re-add.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-8",
                 title: "Outlook Disconnected from Exchange",
                 keywords: ["disconnected", "trying to connect", "offline", "not connected"],
@@ -161,10 +184,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Check Toggle Status",
                         detail: "Ensure 'Work Offline' is not toggled ON in the Send/Receive ribbon."
-                    },\n                    {
+                    },
+                    {
                         text: "Ping M365 Endpoints",
                         detail: "Ping <code>outlook.office365.com</code> to verify DNS resolution."
-                    },\n                    {
+                    },
+                    {
                         text: "Flush DNS",
                         detail: "Run <code>ipconfig /flushdns</code> from Command Prompt."
                     }
@@ -172,7 +197,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Re-authenticate using Modern Auth (clear credentials if needed) or switch networks (e.g., disconnect from VPN) to restore connection.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-9",
                 title: "Autodiscover Failing During Profile Setup",
                 keywords: ["setup profile", "autodiscover", "cannot setup email", "cannot connect exchange"],
@@ -181,10 +207,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Bypass SCP Lookup",
                         detail: "Add Registry Key <code>ExcludeScpLookup</code> under <code>HKCU\Software\Microsoft\Office\16.0\Outlook\AutoDiscover</code> and set to 1."
-                    },\n                    {
+                    },
+                    {
                         text: "Use Microsoft Remote Connectivity Analyzer",
                         detail: "Run the Outlook Connectivity test at testconnectivity.microsoft.com to pinpoint DNS/Auth failures."
-                    },\n                    {
+                    },
+                    {
                         text: "Create Profile via Mail Applet",
                         detail: "Use Control Panel > Mail instead of the Outlook startup wizard."
                     }
@@ -192,7 +220,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Bypass local AD SCP lookups via Registry or fix the external DNS Autodiscover CNAME pointing to <code>autodiscover.outlook.com</code>.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-10",
                 title: "Send/Receive Error 0x8004010F",
                 keywords: ["0x8004010F", "send receive error", "cannot access data file", "data file cannot be accessed"],
@@ -201,10 +230,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Locate Data File",
                         detail: "Go to Account Settings > Data Files. Check the exact path of the default delivery location."
-                    },\n                    {
+                    },
+                    {
                         text: "Re-link Data File",
                         detail: "Click 'Change Folder' on the Email tab, select a temporary folder, then change it back to the correct Inbox."
-                    },\n                    {
+                    },
+                    {
                         text: "Run SCANPST",
                         detail: "If the file is a PST, run SCANPST.EXE to repair file structure."
                     }
@@ -212,7 +243,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Create a completely new Outlook Mail Profile and let Exchange recreate the fresh OST file to permanently fix the link.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-11",
                 title: "Missing Folders / Folders Not Visible",
                 keywords: ["missing folder", "folder disappeared", "cant find folder", "subfolders missing"],
@@ -221,10 +253,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Check Folder List Mode",
                         detail: "Press <code>CTRL + 6</code> to switch to 'Folder List' view to see if it's hidden under a different parent."
-                    },\n                    {
+                    },
+                    {
                         text: "Reset View",
                         detail: "Run <code>outlook.exe /cleanviews</code> to reset all custom folder views."
-                    },\n                    {
+                    },
+                    {
                         text: "Clear Offline Items",
                         detail: "Right-click the Inbox or parent folder > Properties > General > click 'Clear Offline Items', then Update Folder."
                     }
@@ -232,7 +266,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Clear Offline Items on the parent folder to force Outlook to re-download the folder hierarchy from Exchange.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-12",
                 title: "Out of Office (OOF) Not Saving / Server Unreachable",
                 keywords: ["out of office", "automatic replies", "server unavailable", "cannot be displayed"],
@@ -241,10 +276,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Check via OWA",
                         detail: "Verify if OOF can be set via Outlook Web App. If yes, the issue is client-side EWS connection."
-                    },\n                    {
+                    },
+                    {
                         text: "Check Connection Status",
                         detail: "CTRL + Right-click Outlook icon in system tray > Connection Status. Check for EWS connection failures."
-                    },\n                    {
+                    },
+                    {
                         text: "Verify Autodiscover",
                         detail: "Run 'Test E-mail AutoConfiguration' (CTRL + Right-click tray icon) and check the OOF URL."
                     }
@@ -252,7 +289,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Correct UPN/Primary SMTP mismatch in Active Directory, or bypass proxy servers blocking EWS endpoints.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-13",
                 title: "Outlook Rules Not Firing / Corrupted",
                 keywords: ["rules not working", "rules broken", "inbox rules", "client-only rule"],
@@ -261,10 +299,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Check Rules Quota",
                         detail: "Increase rules limit via PowerShell: <code>Set-Mailbox -RulesQuota 256KB</code> (if at 64KB)."
-                    },\n                    {
+                    },
+                    {
                         text: "Export and Delete",
                         detail: "Export rules to an .rwz file as a backup, then run <code>outlook.exe /cleanrules</code> to wipe all local/server rules."
-                    },\n                    {
+                    },
+                    {
                         text: "Recreate Rules from OWA",
                         detail: "Recreate critical server-side rules in OWA to ensure they run even when Outlook is closed."
                     }
@@ -272,7 +312,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Wipe corrupted rules using `/cleanrules` and recreate them, preferably Server-side via OWA, keeping under the quote limit.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-14",
                 title: "Address Book (OAB) Not Updating",
                 keywords: ["offline address book", "oab", "global address list", "gal", "new user not showing"],
@@ -281,10 +322,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Force Download",
                         detail: "Go to Send/Receive > Send/Receive Groups > Download Address Book. Uncheck 'Download changes since last Send/Receive'."
-                    },\n                    {
+                    },
+                    {
                         text: "Delete Local OAB files",
                         detail: "Navigate to <code>%localappdata%\Microsoft\Outlook\Offline Address Books</code> and delete the folder contents."
-                    },\n                    {
+                    },
+                    {
                         text: "Check OWA",
                         detail: "Verify the Global Address List in OWA. If correct there, the client needs fresh OAB generation."
                     }
@@ -292,7 +335,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Deleting the local OAB files and forcing a full manually download forces Outlook to rebuild the address list from scratch.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-15",
                 title: "Freezing When Typing or Switching Folders",
                 keywords: ["freezing", "laggy", "typing delay", "slow to switch folders", "not responding"],
@@ -301,10 +345,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Exclude OST from AV",
                         detail: "Ensure anti-virus is configured to exclude <code>*.ost</code> and <code>*.pst</code> files from real-time scanning."
-                    },\n                    {
+                    },
+                    {
                         text: "Reduce Cached Time",
                         detail: "Slider to 6 months or 1 year in Cached Exchange Mode settings."
-                    },\n                    {
+                    },
+                    {
                         text: "Check Add-ins",
                         detail: "Disable CRM, PDF, or dictation add-ins temporarily to see if performance improves."
                     }
@@ -312,7 +358,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Reduce OST size and add AV exclusions for Outlook data files.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-16",
                 title: "Third-Party Add-in Disabling Repeatedly",
                 keywords: ["add-in disabled", "crm add-in", "teams addin", "plugin missing"],
@@ -321,7 +368,8 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Force Enable in Outlook",
                         detail: "Go to File > Slow and Disabled COM Add-ins. Select 'Always enable this add-in'."
-                    },\n                    {
+                    },
+                    {
                         text: "Modify Registry Resiliency",
                         detail: "Navigate to <code>HKCU\Software\Policies\Microsoft\Office\16.0\Outlook\Resiliency\AddinList</code>. Add a String value with the Add-in ProgID and set it to '1' (Always Enabled)."
                     }
@@ -329,7 +377,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Deploy the 'Always Enable' registry key via Group Policy/Intune to prevent Outlook from auto-disabling critical business add-ins.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-17",
                 title: "Licensing Errors / Unlicensed Product",
                 keywords: ["unlicensed product", "activation", "license missing", "deactivated"],
@@ -338,10 +387,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Sign out of Office",
                         detail: "In Word/Outlook, go to File > Account > Sign Out, and close all Office apps."
-                    },\n                    {
+                    },
+                    {
                         text: "Run OSPP.vbs script",
                         detail: "Run <code>cscript ospp.vbs /dstatus</code> to find the 5-digit product key and use <code>/unpkey:XXXXX</code> to remove stale keys."
-                    },\n                    {
+                    },
+                    {
                         text: "Clear BrokerPlugin Data",
                         detail: "Rename the identity folder in <code>%localappdata%\Packages\Microsoft.AAD.BrokerPlugin...</code>"
                     }
@@ -349,7 +400,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Clear old licenses using OSPP.vbs, clear Windows Credentials, and sign back in to force a fresh activation token from M365.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-18",
                 title: "Attachments Blocked or Cannot Open",
                 keywords: ["blocked attachment", "unsafe file", "cannot open attachment", "pdf opening error"],
@@ -358,10 +410,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Clear OutlookSecureTempFolder",
                         detail: "Lookup <code>OutlookSecureTempFolder</code> in Registry, navigate to that path, and delete all contents."
-                    },\n                    {
+                    },
+                    {
                         text: "Zip the File",
                         detail: "Instruct sender to compress restricted extensions into a .zip file."
-                    },\n                    {
+                    },
+                    {
                         text: "Unblock Level 1 Files",
                         detail: "If business-critical, modify <code>Level1Remove</code> registry key to allow specific extensions (Not recommended for security)."
                     }
@@ -369,7 +423,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Clear the SecureTempFolder registry path contents if attachments give 'Cannot create file' errors. Otherwise, zip restricted files.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-19",
                 title: "Reminders Not Popping Up",
                 keywords: ["reminders missing", "no notifications", "meeting missed", "calendar popups"],
@@ -378,10 +433,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Clean Reminders",
                         detail: "Close Outlook and run <code>outlook.exe /cleanreminders</code>."
-                    },\n                    {
+                    },
+                    {
                         text: "Check Windows Notifications",
                         detail: "Go to Windows Settings > System > Notifications. Ensure Outlook notifications are ON and Focus Assist/Do Not Disturb is OFF."
-                    },\n                    {
+                    },
+                    {
                         text: "Verify Outlook Setting",
                         detail: "File > Options > Advanced. Ensure 'Show reminders' is checked."
                     }
@@ -389,7 +446,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Running `/cleanreminders` recreates the internal reminders queue and usually restores proper popup functionality.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-20",
                 title: "Sent Items Not Saving in Shared Mailboxes",
                 keywords: ["sent item missing", "shared mailbox sent", "copy of sent item"],
@@ -398,7 +456,8 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Registry Fix for Sent Items",
                         detail: "Add DWORD <code>DelegateSentItemsStyle</code> = 1 in <code>HKCU\Software\Microsoft\Office\16.0\Outlook\Preferences</code>."
-                    },\n                    {
+                    },
+                    {
                         text: "Exchange PowerShell Fix",
                         detail: "Run <code>Set-Mailbox -Identity shared@domain.com -MessageCopyForSentAsEnabled $true</code> as Admin."
                     }
@@ -406,7 +465,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Use the Exchange PowerShell command (preferred enterprise method) to automatically copy sent items into the Shared Mailbox Sent folder.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-21",
                 title: "Recovering Deleted Items Fails",
                 keywords: ["recover deleted", "missing email", "permanent delete", "dumpster"],
@@ -415,10 +475,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Open Recover Deleted Items",
                         detail: "Go to Folder tab > click 'Recover Deleted Items'."
-                    },\n                    {
+                    },
+                    {
                         text: "Search via OWA",
                         detail: "Sometimes OWA's Recover Deleted Items interface is more reliable than the Outlook client."
-                    },\n                    {
+                    },
+                    {
                         text: "Admin eDiscovery",
                         detail: "If past the 14-day default window, an Admin must perform an eDiscovery search (if Litigation Hold is enabled)."
                     }
@@ -426,7 +488,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Select the item in the 'Recover Deleted Items' dialog and choose 'Restore Selected Items'. It goes back to the original folder.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-22",
                 title: "Teams Meeting Add-in Missing",
                 keywords: ["teams addin", "no teams button", "missing meeting link", "skype addin"],
@@ -435,10 +498,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Re-enable in Add-ins",
                         detail: "File > Options > Add-ins. Change Manage drop-down to Disabled Items, click Go. Re-enable Teams Add-in."
-                    },\n                    {
+                    },
+                    {
                         text: "Re-register DLL",
                         detail: "Close Outlook. Re-register <code>Microsoft.Teams.AddinLoader.dll</code> using <code>regsvr32</code>."
-                    },\n                    {
+                    },
+                    {
                         text: "Restart Teams",
                         detail: "Fully quit Teams from system tray, restart Teams, then restart Outlook."
                     }
@@ -446,7 +511,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Go to Disabled Items, re-enable the Microsoft Teams Meeting Add-in, and check the COM Add-ins list to ensure it is checked.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-23",
                 title: "Signatures Missing After Upgrading",
                 keywords: ["missing signature", "signature blank", "roaming signatures"],
@@ -455,10 +521,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Check Local Path",
                         detail: "Verify if the `.htm` and `.rtf` signature files still exist in the AppData pathway."
-                    },\n                    {
+                    },
+                    {
                         text: "Disable Roaming Signatures",
                         detail: "Set Registry DWORD <code>DisableRoamingSignaturesTemporaryToggle</code> = 1 under <code>HKCU\Software\Microsoft\Office\16.0\Outlook\Setup</code>."
-                    },\n                    {
+                    },
+                    {
                         text: "Recreate Signatures",
                         detail: "If missing completely, the user must recreate them via File > Options > Mail > Signatures."
                     }
@@ -466,7 +534,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Add the Registry key to disable Cloud Signatures if enterprise local-signature scripts are failing to apply.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-24",
                 title: "Mail Stuck in Outbox",
                 keywords: ["stuck in outbox", "not sending", "email pending", "large attachment"],
@@ -475,10 +544,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Work Offline",
                         detail: "Go to Send/Receive tab, click 'Work Offline'. Restart Outlook."
-                    },\n                    {
+                    },
+                    {
                         text: "Move/Delete Stuck Email",
                         detail: "While offline, open the Outbox, move the stuck email to Drafts or delete it. Turn off 'Work Offline'."
-                    },\n                    {
+                    },
+                    {
                         text: "Check Attachment Size",
                         detail: "Ensure attachments do not exceed the 35MB standard Exchange limit."
                     }
@@ -486,7 +557,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Toggle to Work Offline mode to release the lock on the Outbox, delete the large email, and reconnect to clear the queue.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-25",
                 title: "VPN / Proxy Blocking Connection",
                 keywords: ["vpn issue", "proxy error", "network block", "no connection offsite"],
@@ -495,10 +567,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Test Off-VPN",
                         detail: "Disconnect from VPN. If it connects, the VPN firewall is blocking M365 IPs."
-                    },\n                    {
+                    },
+                    {
                         text: "M365 Network Connectivity Test",
                         detail: "Run <code>connectivity.office.com</code> to verify proxy bypass rules are active for <code>Optimize</code> category endpoints."
-                    },\n                    {
+                    },
+                    {
                         text: "Check Proxy Settings",
                         detail: "Ensure 'Bypass proxy server for local addresses' is set in Internet Options."
                     }
@@ -506,7 +580,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Work with the Network team to bypass all Microsoft 365 <code>Optimize</code> endpoints from VPN forced-tunneling and SSL Inspection.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-26",
                 title: "New Outlook Toggle Reverting to Classic",
                 keywords: ["new outlook", "toggle missing", "reverts classic", "new outlook beta"],
@@ -515,10 +590,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Verify Exchange Hosting",
                         detail: "Ensure the mailbox is fully migrated to Exchange Online (M365). New Outlook does not support legacy on-prem servers yet."
-                    },\n                    {
+                    },
+                    {
                         text: "Check GPO",
                         detail: "Verify if the registry key <code>HideNewOutlookToggle</code> is set to 1."
-                    },\n                    {
+                    },
+                    {
                         text: "Manual Install",
                         detail: "Install 'Outlook for Windows' manually from the Microsoft Store."
                     }
@@ -526,7 +603,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Ensure mailbox is M365-hosted and manually install the UWP Outlook app from the Store if the toggle is broken.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-27",
                 title: "Images Not Downloading in Emails",
                 keywords: ["red x", "images missing", "pictures not downloading", "blocked content"],
@@ -535,7 +613,8 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Trust Center Check",
                         detail: "File > Options > Trust Center > Trust Center Settings > Automatic Download. Uncheck 'Don't download pictures automatically'."
-                    },\n                    {
+                    },
+                    {
                         text: "Check IE Cache",
                         detail: "In Internet Options > General > Browsing history settings, check if the Current location path is valid. Move the folder to Default if necessary."
                     }
@@ -543,7 +622,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Fix the corrupted Internet Temporary Files folder path in Windows Internet Options, which Outlook uses to process downloaded images.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-28",
                 title: "Font Size Changes Suddenly / Zoom Issue",
                 keywords: ["font too small", "zoom out", "text tiny", "huge font", "reading pane text"],
@@ -552,10 +632,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Reset Zoom via Ribbon",
                         detail: "Open an email, go to the Message/Format Text tab, click Zoom, and select 100%."
-                    },\n                    {
+                    },
+                    {
                         text: "Mouse Wheel Fix",
                         detail: "Click inside the Reading Pane, hold CTRL, and spin the mouse wheel to resize text dynamically."
-                    },\n                    {
+                    },
+                    {
                         text: "Zoom Slider",
                         detail: "Check the bottom right corner of the Outlook window for the Zoom slider."
                     }
@@ -563,7 +645,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Set Zoom back to 100% and tick 'Remember my preference' so it applies to all future emails.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-29",
                 title: "Delegation: 'Cannot open the folders' Error",
                 keywords: ["delegate error", "boss calendar", "assistant permissions", "cannot open"],
@@ -572,10 +655,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Set Root Permissions",
                         detail: "Manager must right-click their main email address at the top of the folder list > Properties > Permissions > Add Delegate > assign 'Folder visible' only."
-                    },\n                    {
+                    },
+                    {
                         text: "Verify Inbox Permissions",
                         detail: "Ensure the actual Inbox folder has Editor access assigned."
-                    },\n                    {
+                    },
+                    {
                         text: "Restart Client",
                         detail: "Delegate restarts Outlook to pull updated ACLs."
                     }
@@ -583,7 +668,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Assign 'Folder Visible' permission on the 'Top of Information Store' (Root folder) to allow the delegate to map the subfolders correctly.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            },\n            {
+            },
+            {
                 id: "outlook-l3-issue-30",
                 title: "PST Password Lost or Forgotten",
                 keywords: ["pst password", "forgot password", "unlock pst", "archive password"],
@@ -592,10 +678,12 @@ const KNOWLEDGE_BASE = {
                     {
                         text: "Third-Party Tools",
                         detail: "Microsoft does NOT provide a native PST password recovery tool. A third-party tool like 'NirSoft PstPassword' is required to strip the hashing."
-                    },\n                    {
+                    },
+                    {
                         text: "Compliance Check",
                         detail: "Verify enterprise security policy before running password-cracking tools on PST files."
-                    },\n                    {
+                    },
+                    {
                         text: "Restore from Backup",
                         detail: "If cracking fails, check Volume Shadow Copies (Previous Versions) prior to the password being set."
                     }
@@ -603,7 +691,8 @@ const KNOWLEDGE_BASE = {
                 warnings: ["For L3 Administrators / Senior Support context."],
                 verification: "<strong>Resolution:</strong> Use authorized third-party recovery utilities to strip the weak CRC32 hash from the PST file if corporate policy permits.",
                 escalation: "Escalate to Microsoft Premier Support or Exchange Engineering if the resolution fails."
-            }\n        ]
+            }
+        ]
     },
 
     windows: {
@@ -1152,11 +1241,11 @@ const KNOWLEDGE_BASE = {
                     },
                     {
                         text: "2. Non-Production Servers (Jackson, Stage, UAT)",
-                        detail: "Authenticate using your <strong>Non-Production credentials</strong>.<br>Login format: <code>vartopia.dev\\username</code> (Example: <code>vartopia.dev\\nsharma</code>).<br>Password: Use your Non-Production domain password (this is the same password used for OpenVPN)."
+                        detail: "Authenticate using your <strong>Non-Production credentials</strong>.<br>Login format: <code>vartopia.dev\\username</code> (Example: <code>vartopia.dev\\sharma</code>).<br>Password: Use your Non-Production domain password (this is the same password used for OpenVPN)."
                     },
                     {
                         text: "3. Production Server (Lincoln)",
-                        detail: "Authenticate using your <strong>Production domain credentials</strong>.<br>Login format: <code>prod.corp.vartopia.com\\username</code> (Example: <code>prod.corp.vartopia.com\\nsharma</code>).<br>Password: Use your Production domain password (this is DIFFERENT from Non-Production)."
+                        detail: "Authenticate using your <strong>Production domain credentials</strong>.<br>Login format: <code>prod.corp.vartopia.com\\username</code> (Example: <code>prod.corp.vartopia.com\\sharma</code>).<br>Password: Use your Production domain password (this is DIFFERENT from Non-Production)."
                     }
                 ],
                 warnings: ["Non-Production credentials will NOT work in Production.", "Production credentials will NOT work in Non-Production.", "OpenVPN is mandatory for ALL server access.", "Incorrect domain or password will result in login failure."],
