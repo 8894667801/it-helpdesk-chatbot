@@ -1232,7 +1232,7 @@ const KNOWLEDGE_BASE = {
             {
                 id: "aws-server-access",
                 title: "AWS Server Access & Login Rules",
-                keywords: ["aws", "server", "login", "vartopia", "jackson", "lincoln", "stage", "uat", "vpn", "openvpn", "prod", "non-prod", "production", "non-production", "credentials"],
+                keywords: ["aws", "server", "login", "godaddy", "jackson", "lincoln", "stage", "uat", "vpn", "openvpn", "prod", "non-prod", "production", "non-production", "credentials"],
                 symptoms: "Guidance on how to correctly log in to AWS environments (Jackson, Stage, UAT, Lincoln) using the correct domains and passwords.",
                 steps: [
                     {
@@ -1241,11 +1241,11 @@ const KNOWLEDGE_BASE = {
                     },
                     {
                         text: "2. Non-Production Servers (Jackson, Stage, UAT)",
-                        detail: "Authenticate using your <strong>Non-Production credentials</strong>.<br>Login format: <code>vartopia.dev\\username</code> (Example: <code>vartopia.dev\\sharma</code>).<br>Password: Use your Non-Production domain password (this is the same password used for OpenVPN)."
+                        detail: "Authenticate using your <strong>Non-Production credentials</strong>.<br>Login format: <code>godaddy.dev\\username</code> (Example: <code>godaddy.dev\\sharma</code>).<br>Password: Use your Non-Production domain password (this is the same password used for OpenVPN)."
                     },
                     {
                         text: "3. Production Server (Lincoln)",
-                        detail: "Authenticate using your <strong>Production domain credentials</strong>.<br>Login format: <code>prod.corp.vartopia.com\\username</code> (Example: <code>prod.corp.vartopia.com\\sharma</code>).<br>Password: Use your Production domain password (this is DIFFERENT from Non-Production)."
+                        detail: "Authenticate using your <strong>Production domain credentials</strong>.<br>Login format: <code>prod.corp.godaddy.com\\username</code> (Example: <code>prod.corp.godaddy.com\\sharma</code>).<br>Password: Use your Production domain password (this is DIFFERENT from Non-Production)."
                     }
                 ],
                 warnings: ["Non-Production credentials will NOT work in Production.", "Production credentials will NOT work in Non-Production.", "OpenVPN is mandatory for ALL server access.", "Incorrect domain or password will result in login failure."],

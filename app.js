@@ -379,7 +379,7 @@
             updates: ['update', 'driver', 'restart', 'reboot', 'maintenance', 'windows update'],
             m365: ['365', 'microsoft 365', 'password', 'mfa', 'login', 'sign in', 'license', 'office'],
             health: ['slow', 'disk', 'cleanup', 'performance', 'speed', 'storage', 'health'],
-            aws: ['aws', 'server', 'login', 'vartopia', 'jackson', 'lincoln', 'stage', 'uat', 'vpn', 'openvpn', 'prod', 'non-prod']
+            aws: ['aws', 'server', 'login', 'godaddy', 'jackson', 'lincoln', 'stage', 'uat', 'vpn', 'openvpn', 'prod', 'non-prod']
         };
 
         for (const [catId, keywords] of Object.entries(categoryKeywords)) {
