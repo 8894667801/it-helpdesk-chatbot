@@ -1132,5 +1132,37 @@ const KNOWLEDGE_BASE = {
                 escalation: "If your PC won't shut down or restart properly, or gets stuck during the process, contact IT Admin."
             }
         ]
+    },
+
+    aws: {
+        id: "aws",
+        title: "AWS Access",
+        icon: "☁️",
+        description: "AWS server login, VPN, and domain instructions",
+        issues: [
+            {
+                id: "aws-server-access",
+                title: "AWS Server Access & Login Rules",
+                keywords: ["aws", "server", "login", "vartopia", "jackson", "lincoln", "stage", "uat", "vpn", "openvpn", "prod", "non-prod", "production", "non-production", "credentials"],
+                symptoms: "Guidance on how to correctly log in to AWS environments (Jackson, Stage, UAT, Lincoln) using the correct domains and passwords.",
+                steps: [
+                    {
+                        text: "1. Mandatory: Connect to OpenVPN",
+                        detail: "You must FIRST connect to OpenVPN before attempting to log in to any AWS server."
+                    },
+                    {
+                        text: "2. Non-Production Servers (Jackson, Stage, UAT)",
+                        detail: "Authenticate using your <strong>Non-Production credentials</strong>.<br>Login format: <code>vartopia.dev\\username</code> (Example: <code>vartopia.dev\\nsharma</code>).<br>Password: Use your Non-Production domain password (this is the same password used for OpenVPN)."
+                    },
+                    {
+                        text: "3. Production Server (Lincoln)",
+                        detail: "Authenticate using your <strong>Production domain credentials</strong>.<br>Login format: <code>prod.corp.vartopia.com\\username</code> (Example: <code>prod.corp.vartopia.com\\nsharma</code>).<br>Password: Use your Production domain password (this is DIFFERENT from Non-Production)."
+                    }
+                ],
+                warnings: ["Non-Production credentials will NOT work in Production.", "Production credentials will NOT work in Non-Production.", "OpenVPN is mandatory for ALL server access.", "Incorrect domain or password will result in login failure."],
+                verification: "Following these steps exactly ensures you are connecting securely and logging into the correct AWS environment.",
+                escalation: "If you receive 'Access Denied' after following these domain guidelines, contact IT Admin to verify your Active Directory account status or VPN tunnel."
+            }
+        ]
     }
 };
