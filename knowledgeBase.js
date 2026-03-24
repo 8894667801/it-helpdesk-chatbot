@@ -1253,5 +1253,417 @@ const KNOWLEDGE_BASE = {
                 escalation: "If you receive 'Access Denied' after following these domain guidelines, contact IT Admin to verify your Active Directory account status or VPN tunnel."
             }
         ]
+    },
+
+    linux: {
+        id: "linux",
+        title: "Linux Administration",
+        icon: "🐧",
+        description: "Linux commands, troubleshooting, automation, and projects",
+        issues: [
+            {
+                id: "linux-file-dir",
+                title: "File & Directory Management",
+                keywords: ["ls", "cd", "pwd", "cp", "mv", "rm", "mkdir", "rmdir", "find", "stat", "list files", "copy file", "move file", "delete file", "create directory", "remove directory", "search file", "linux files"],
+                symptoms: "<strong>Purpose:</strong> Manage files and directories — list, create, copy, move, delete, and search.<br><strong>When to use:</strong> Everyday file operations on any Linux system.",
+                steps: [
+                    {
+                        text: "ls — List files and directories",
+                        detail: "<code>ls</code> — basic listing<br><code>ls -la</code> — long format with hidden files<br><code>ls -lh</code> — human-readable sizes<br><code>ls -lt</code> — sort by modification time<br><strong>Example output:</strong> <code>drwxr-xr-x 2 user group 4096 Mar 24 file.txt</code>"
+                    },
+                    {
+                        text: "cd & pwd — Navigate directories",
+                        detail: "<code>cd /var/log</code> — go to a directory<br><code>cd ..</code> — go up one level<br><code>cd ~</code> — go to home directory<br><code>pwd</code> — print current working directory"
+                    },
+                    {
+                        text: "cp & mv — Copy and move files",
+                        detail: "<code>cp file.txt /backup/</code> — copy file<br><code>cp -r /src/ /dst/</code> — copy directory recursively<br><code>mv old.txt new.txt</code> — rename file<br><code>mv file.txt /archive/</code> — move file to another directory"
+                    },
+                    {
+                        text: "rm & mkdir — Delete and create",
+                        detail: "<code>rm file.txt</code> — delete file<br><code>rm -rf /tmp/old/</code> — delete directory recursively (⚠️ use carefully)<br><code>mkdir -p /opt/app/data</code> — create nested directories<br><code>rmdir emptydir</code> — remove empty directory only"
+                    },
+                    {
+                        text: "find — Search files",
+                        detail: "<code>find / -name '*.log'</code> — find by name<br><code>find /var -size +100M</code> — find files larger than 100MB<br><code>find /home -mtime -7</code> — modified in last 7 days<br><code>find / -type f -perm 777</code> — find world-writable files (security audit)"
+                    }
+                ],
+                warnings: ["<code>rm -rf</code> is irreversible — always double-check the path before executing.", "Use <code>find</code> with <code>-maxdepth</code> to limit search scope on large filesystems."],
+                verification: "Run <code>ls -la</code> to confirm file operations completed successfully. Use <code>stat filename</code> to inspect detailed file metadata.",
+                escalation: "If files are missing or permissions prevent access, check filesystem mounts with <code>df -h</code> and ownership with <code>ls -la</code>."
+            },
+            {
+                id: "linux-file-viewing",
+                title: "File Viewing & Editing",
+                keywords: ["cat", "less", "more", "head", "tail", "nano", "vi", "vim", "wc", "view file", "edit file", "read file", "file content", "text editor"],
+                symptoms: "<strong>Purpose:</strong> View, read, and edit file contents from the terminal.<br><strong>When to use:</strong> Reading logs, editing configs, inspecting files.",
+                steps: [
+                    {
+                        text: "cat — View entire file content",
+                        detail: "<code>cat /etc/hostname</code> — display file<br><code>cat file1.txt file2.txt</code> — concatenate multiple files<br><code>cat -n file.txt</code> — show with line numbers"
+                    },
+                    {
+                        text: "less & more — Paginated viewing",
+                        detail: "<code>less /var/log/syslog</code> — scroll up/down with arrow keys, press <code>q</code> to quit<br><code>more file.txt</code> — forward-only paging<br>💡 <strong>Tip:</strong> <code>less</code> is preferred over <code>more</code> for better navigation."
+                    },
+                    {
+                        text: "head & tail — View beginning or end",
+                        detail: "<code>head -20 file.txt</code> — first 20 lines<br><code>tail -50 /var/log/syslog</code> — last 50 lines<br><code>tail -f /var/log/syslog</code> — live follow (watch new lines as they appear) — great for monitoring logs in real-time"
+                    },
+                    {
+                        text: "nano & vi — Text editors",
+                        detail: "<strong>nano</strong> (beginner-friendly):<br><code>nano /etc/hosts</code> — open file, edit, <code>Ctrl+O</code> to save, <code>Ctrl+X</code> to exit<br><br><strong>vi/vim</strong> (advanced):<br><code>vi /etc/hosts</code> — press <code>i</code> for insert mode, <code>Esc</code> then <code>:wq</code> to save & quit, <code>:q!</code> to quit without saving"
+                    },
+                    {
+                        text: "wc — Count words, lines, characters",
+                        detail: "<code>wc -l file.txt</code> — count lines<br><code>wc -w file.txt</code> — count words<br><code>wc -c file.txt</code> — count bytes<br><strong>Example:</strong> <code>cat /var/log/auth.log | wc -l</code> → count login attempts"
+                    }
+                ],
+                warnings: ["In <code>vi</code>, always press <code>Esc</code> before typing commands like <code>:wq</code>.", "Use <code>tail -f</code> for live log monitoring — press <code>Ctrl+C</code> to stop."],
+                verification: "After editing, verify changes with <code>cat filename</code> or <code>head filename</code>.",
+                escalation: "If config file edits break a service, check syntax with the service's validation tool (e.g., <code>nginx -t</code>, <code>sshd -t</code>)."
+            },
+            {
+                id: "linux-permissions",
+                title: "Permissions & Ownership",
+                keywords: ["chmod", "chown", "chgrp", "umask", "permissions", "rwx", "owner", "group", "777", "755", "644", "permission denied", "access denied"],
+                symptoms: "<strong>Purpose:</strong> Control who can read, write, and execute files.<br><strong>When to use:</strong> Fixing 'Permission denied' errors, securing files, setting up shared directories.",
+                steps: [
+                    {
+                        text: "Understanding permission format",
+                        detail: "<code>-rwxr-xr--</code> breaks down as:<br>• <strong>Owner:</strong> rwx (read+write+execute)<br>• <strong>Group:</strong> r-x (read+execute)<br>• <strong>Others:</strong> r-- (read only)<br><br>Numeric: <code>754</code> → Owner=7(rwx), Group=5(r-x), Others=4(r--)"
+                    },
+                    {
+                        text: "chmod — Change permissions",
+                        detail: "<code>chmod 755 script.sh</code> — owner full, group/others read+execute<br><code>chmod 644 config.txt</code> — owner read+write, others read only<br><code>chmod +x script.sh</code> — add execute permission<br><code>chmod -R 750 /opt/app/</code> — apply recursively to directory"
+                    },
+                    {
+                        text: "chown — Change owner",
+                        detail: "<code>chown user:group file.txt</code> — change owner and group<br><code>chown -R www-data:www-data /var/www/</code> — recursive ownership for web server<br><code>chown root file.txt</code> — change owner only"
+                    },
+                    {
+                        text: "chgrp — Change group",
+                        detail: "<code>chgrp developers project/</code> — change group ownership<br><code>chgrp -R devteam /shared/code/</code> — recursive group change"
+                    },
+                    {
+                        text: "umask — Default permissions",
+                        detail: "<code>umask</code> — show current default (e.g., 0022)<br><code>umask 027</code> — new files: 750 for dirs, 640 for files<br>💡 <strong>Tip:</strong> Set in <code>~/.bashrc</code> for persistence."
+                    }
+                ],
+                warnings: ["Never use <code>chmod 777</code> in production — it's a security risk.", "Changing ownership of system files can break services. Use <code>sudo</code> carefully."],
+                verification: "Run <code>ls -la filename</code> to verify permissions after changes. Use <code>stat filename</code> for detailed info.",
+                escalation: "If 'Permission denied' persists after chmod, check SELinux (<code>getenforce</code>) or ACLs (<code>getfacl filename</code>)."
+            },
+            {
+                id: "linux-user-management",
+                title: "User & Group Management",
+                keywords: ["useradd", "userdel", "usermod", "groupadd", "groupdel", "passwd", "id", "whoami", "su", "sudo", "add user", "delete user", "create user", "linux user", "linux group"],
+                symptoms: "<strong>Purpose:</strong> Create, modify, and manage Linux user accounts and groups.<br><strong>When to use:</strong> Onboarding new users, managing access, troubleshooting login issues.",
+                steps: [
+                    {
+                        text: "useradd — Create a new user",
+                        detail: "<code>sudo useradd -m -s /bin/bash john</code><br>• <code>-m</code> creates home directory<br>• <code>-s</code> sets default shell<br><code>sudo passwd john</code> — set the password"
+                    },
+                    {
+                        text: "usermod — Modify a user",
+                        detail: "<code>sudo usermod -aG sudo john</code> — add user to sudo group<br><code>sudo usermod -aG docker,developers john</code> — add to multiple groups<br><code>sudo usermod -L john</code> — lock account<br><code>sudo usermod -U john</code> — unlock account"
+                    },
+                    {
+                        text: "userdel — Delete a user",
+                        detail: "<code>sudo userdel john</code> — remove user (keeps home dir)<br><code>sudo userdel -r john</code> — remove user + home directory<br>⚠️ Always back up data before deleting users."
+                    },
+                    {
+                        text: "Group management",
+                        detail: "<code>sudo groupadd developers</code> — create group<br><code>sudo groupdel developers</code> — delete group<br><code>groups john</code> — show user's groups<br><code>cat /etc/group | grep developers</code> — list group members"
+                    },
+                    {
+                        text: "Identity & switching users",
+                        detail: "<code>whoami</code> — show current username<br><code>id john</code> — show UID, GID, and groups<br><code>su - john</code> — switch to user john<br><code>sudo command</code> — run as root<br><code>sudo -u www-data command</code> — run as specific user"
+                    }
+                ],
+                warnings: ["Always use <code>-aG</code> (append) with usermod, not just <code>-G</code>, or you'll remove existing groups.", "Deleting a user with <code>-r</code> permanently removes their home directory."],
+                verification: "Run <code>id username</code> to verify user exists and group memberships. Check <code>/etc/passwd</code> and <code>/etc/group</code>.",
+                escalation: "If users can't log in, check <code>/var/log/auth.log</code> for authentication errors. Verify account isn't locked with <code>passwd -S username</code>."
+            },
+            {
+                id: "linux-process-monitoring",
+                title: "Process & System Monitoring",
+                keywords: ["ps", "top", "htop", "uptime", "kill", "killall", "free", "vmstat", "iostat", "process", "cpu", "memory", "ram", "load average", "linux slow", "high cpu"],
+                symptoms: "<strong>Purpose:</strong> Monitor system resources, manage processes, and diagnose performance issues.<br><strong>When to use:</strong> High CPU/memory usage, unresponsive system, killing hung processes.",
+                steps: [
+                    {
+                        text: "ps — View running processes",
+                        detail: "<code>ps aux</code> — all processes with details<br><code>ps aux | grep nginx</code> — find specific process<br><code>ps -ef --forest</code> — show process tree<br>Columns: USER, PID, %CPU, %MEM, COMMAND"
+                    },
+                    {
+                        text: "top / htop — Real-time monitoring",
+                        detail: "<code>top</code> — built-in real-time monitor<br>• Press <code>M</code> to sort by memory, <code>P</code> by CPU, <code>q</code> to quit<br><code>htop</code> — enhanced interactive viewer (install: <code>sudo apt install htop</code>)<br>• Shows CPU bars, memory bars, and process tree"
+                    },
+                    {
+                        text: "free — Memory usage",
+                        detail: "<code>free -h</code> — human-readable RAM usage<br><strong>Example output:</strong><br><code>              total   used   free   available</code><br><code>Mem:           16Gi   8.2Gi  2.1Gi  7.4Gi</code><br>💡 <strong>Tip:</strong> 'available' is what matters, not 'free' (Linux uses free RAM for cache)."
+                    },
+                    {
+                        text: "kill — Terminate processes",
+                        detail: "<code>kill PID</code> — graceful stop (SIGTERM)<br><code>kill -9 PID</code> — force kill (SIGKILL)<br><code>killall nginx</code> — kill all processes by name<br><code>pkill -u john</code> — kill all processes by user"
+                    },
+                    {
+                        text: "uptime & load average",
+                        detail: "<code>uptime</code> — shows system uptime and load averages<br><strong>Example:</strong> <code>load average: 2.50, 1.80, 1.20</code> (1min, 5min, 15min)<br>💡 Load average should be less than the number of CPU cores. Check cores: <code>nproc</code>"
+                    }
+                ],
+                warnings: ["<code>kill -9</code> doesn't allow graceful shutdown — data may be lost. Try <code>kill PID</code> first.", "High load average doesn't always mean high CPU — could be I/O wait. Check with <code>iostat</code>."],
+                verification: "After killing a process, verify with <code>ps aux | grep processname</code>. Monitor system health with <code>htop</code>.",
+                escalation: "If system is unresponsive with high load, check <code>dmesg</code> for OOM killer events and <code>journalctl -xe</code> for service failures."
+            },
+            {
+                id: "linux-disk-management",
+                title: "Disk & Filesystem Management",
+                keywords: ["df", "du", "lsblk", "mount", "umount", "fdisk", "fsck", "disk space", "disk full", "disk usage", "partition", "filesystem", "linux storage"],
+                symptoms: "<strong>Purpose:</strong> Monitor disk usage, manage partitions, and troubleshoot storage issues.<br><strong>When to use:</strong> Disk full errors, adding new storage, checking filesystem health.",
+                steps: [
+                    {
+                        text: "df — Disk free space",
+                        detail: "<code>df -h</code> — human-readable disk usage for all mounts<br><code>df -h /</code> — check root partition specifically<br><code>df -i</code> — check inode usage (can run out even with free space!)"
+                    },
+                    {
+                        text: "du — Directory size",
+                        detail: "<code>du -sh /var/log/</code> — total size of a directory<br><code>du -h --max-depth=1 /</code> — size of each top-level directory<br><code>du -sh * | sort -rh | head -10</code> — top 10 largest items in current dir"
+                    },
+                    {
+                        text: "lsblk — Block devices",
+                        detail: "<code>lsblk</code> — show all block devices (disks and partitions)<br><code>lsblk -f</code> — show filesystem type and mount points<br>Great for seeing new disks that haven't been mounted yet."
+                    },
+                    {
+                        text: "mount / umount — Mount filesystems",
+                        detail: "<code>sudo mount /dev/sdb1 /mnt/data</code> — mount a partition<br><code>sudo umount /mnt/data</code> — unmount<br><code>cat /etc/fstab</code> — view persistent mounts<br>Add to <code>/etc/fstab</code> for automatic mount on boot."
+                    },
+                    {
+                        text: "Finding large files",
+                        detail: "<code>find / -type f -size +100M -exec ls -lh {} \\;</code> — find files over 100MB<br><code>sudo journalctl --vacuum-size=500M</code> — trim journal logs<br><code>sudo apt clean</code> (Debian/Ubuntu) — clear package cache"
+                    }
+                ],
+                warnings: ["Never run <code>fsck</code> on a mounted filesystem — unmount first or boot into recovery.", "Always verify the correct device name with <code>lsblk</code> before formatting or mounting."],
+                verification: "After cleanup, run <code>df -h</code> to confirm free space increased. Use <code>lsblk -f</code> to verify mounts.",
+                escalation: "If disk is 100% full and system is unresponsive, boot into recovery mode. Check for large log files in <code>/var/log/</code>."
+            },
+            {
+                id: "linux-networking",
+                title: "Networking Commands",
+                keywords: ["ip addr", "ip route", "ss", "netstat", "ping", "traceroute", "nslookup", "dig", "curl", "wget", "scp", "rsync", "tcpdump", "network", "dns", "linux network", "port", "connection"],
+                symptoms: "<strong>Purpose:</strong> Configure networks, diagnose connectivity, transfer files, and inspect traffic.<br><strong>When to use:</strong> Network issues, DNS problems, checking open ports, transferring files.",
+                steps: [
+                    {
+                        text: "ip addr / ip route — Network configuration",
+                        detail: "<code>ip addr show</code> — show all interfaces and IPs<br><code>ip route show</code> — show routing table<br><code>ip link set eth0 up</code> — bring interface up<br><code>ip addr add 192.168.1.10/24 dev eth0</code> — assign IP"
+                    },
+                    {
+                        text: "ping & traceroute — Connectivity testing",
+                        detail: "<code>ping -c 4 google.com</code> — send 4 ICMP packets<br><code>traceroute google.com</code> — show network path (hop by hop)<br>💡 If ping fails but traceroute works, ICMP may be blocked."
+                    },
+                    {
+                        text: "ss / netstat — Check ports & connections",
+                        detail: "<code>ss -tulnp</code> — show all listening ports with PID<br><code>ss -s</code> — connection summary statistics<br><code>netstat -tulnp</code> — legacy alternative<br>💡 <code>ss</code> is faster and preferred over <code>netstat</code>."
+                    },
+                    {
+                        text: "DNS: nslookup & dig",
+                        detail: "<code>nslookup google.com</code> — simple DNS lookup<br><code>dig google.com +short</code> — authoritative DNS query<br><code>dig @8.8.8.8 example.com</code> — query specific DNS server<br><code>cat /etc/resolv.conf</code> — check configured DNS servers"
+                    },
+                    {
+                        text: "curl, wget, scp, rsync — Transfer tools",
+                        detail: "<code>curl -I https://example.com</code> — check HTTP headers<br><code>wget https://example.com/file.zip</code> — download file<br><code>scp file.txt user@server:/path/</code> — secure copy to remote<br><code>rsync -avz /src/ user@server:/dst/</code> — efficient sync with progress"
+                    }
+                ],
+                warnings: ["<code>tcpdump</code> captures raw traffic — use with sudo and be mindful of privacy.", "Always use <code>-c</code> with ping to limit packets, otherwise it runs forever."],
+                verification: "Test connectivity with <code>ping</code>, verify DNS with <code>dig</code>, check open ports with <code>ss -tulnp</code>.",
+                escalation: "For persistent network issues, check firewall rules (<code>iptables -L</code> or <code>ufw status</code>), verify routing (<code>ip route</code>), and check <code>/etc/resolv.conf</code> for DNS."
+            },
+            {
+                id: "linux-services-logs",
+                title: "Service & Log Management",
+                keywords: ["systemctl", "service", "journalctl", "dmesg", "crontab", "at", "start service", "stop service", "restart service", "enable service", "linux service", "linux logs", "cron", "cron job", "scheduled task"],
+                symptoms: "<strong>Purpose:</strong> Manage system services, view logs, and schedule recurring tasks.<br><strong>When to use:</strong> Starting/stopping services, debugging service failures, setting up cron jobs.",
+                steps: [
+                    {
+                        text: "systemctl — Service management",
+                        detail: "<code>sudo systemctl start nginx</code> — start service<br><code>sudo systemctl stop nginx</code> — stop service<br><code>sudo systemctl restart nginx</code> — restart<br><code>sudo systemctl enable nginx</code> — start on boot<br><code>systemctl status nginx</code> — check status & recent logs<br><code>systemctl list-units --failed</code> — list failed services"
+                    },
+                    {
+                        text: "journalctl — System logs",
+                        detail: "<code>journalctl -u nginx</code> — logs for specific service<br><code>journalctl -u nginx --since '1 hour ago'</code> — recent logs<br><code>journalctl -xe</code> — last errors with context<br><code>journalctl -f</code> — follow logs in real-time (like tail -f)"
+                    },
+                    {
+                        text: "dmesg — Kernel messages",
+                        detail: "<code>dmesg | tail -30</code> — recent kernel messages<br><code>dmesg | grep -i error</code> — filter errors<br><code>dmesg -T</code> — human-readable timestamps<br>Great for hardware issues, USB detection, disk errors."
+                    },
+                    {
+                        text: "crontab — Schedule recurring tasks",
+                        detail: "<code>crontab -e</code> — edit your cron jobs<br><code>crontab -l</code> — list your cron jobs<br><br><strong>Format:</strong> <code>MIN HOUR DOM MON DOW COMMAND</code><br><strong>Examples:</strong><br><code>0 2 * * * /backup/run.sh</code> — daily at 2 AM<br><code>*/5 * * * * /scripts/health.sh</code> — every 5 minutes<br><code>0 0 * * 0 /scripts/weekly.sh</code> — every Sunday midnight"
+                    },
+                    {
+                        text: "Common log file locations",
+                        detail: "<code>/var/log/syslog</code> — general system log<br><code>/var/log/auth.log</code> — authentication/login attempts<br><code>/var/log/nginx/</code> — web server logs<br><code>/var/log/dmesg</code> — boot messages<br><code>/var/log/kern.log</code> — kernel logs"
+                    }
+                ],
+                warnings: ["Always check <code>systemctl status</code> before and after making service changes.", "Cron job errors go to syslog by default — redirect output: <code>command >> /var/log/myjob.log 2>&1</code>"],
+                verification: "Run <code>systemctl status servicename</code> to verify service state. Check <code>journalctl -u servicename</code> for errors.",
+                escalation: "If a service won't start, check <code>journalctl -xe</code> for detailed errors, verify config syntax, and check port conflicts with <code>ss -tulnp</code>."
+            },
+            {
+                id: "linux-package-management",
+                title: "Package Management",
+                keywords: ["apt", "apt-get", "yum", "dnf", "rpm", "tar", "zip", "unzip", "install package", "update system", "linux install", "linux update", "package", "software"],
+                symptoms: "<strong>Purpose:</strong> Install, update, and manage software packages.<br><strong>When to use:</strong> Installing new software, updating the system, managing dependencies.",
+                steps: [
+                    {
+                        text: "APT — Debian/Ubuntu",
+                        detail: "<code>sudo apt update</code> — refresh package index<br><code>sudo apt upgrade</code> — upgrade all packages<br><code>sudo apt install nginx</code> — install package<br><code>sudo apt remove nginx</code> — remove package<br><code>sudo apt autoremove</code> — clean unused dependencies<br><code>apt search keyword</code> — search for packages"
+                    },
+                    {
+                        text: "YUM/DNF — RHEL/CentOS/Fedora",
+                        detail: "<code>sudo yum update</code> or <code>sudo dnf update</code> — update system<br><code>sudo yum install httpd</code> — install package<br><code>sudo yum remove httpd</code> — remove package<br><code>yum list installed</code> — list all installed packages<br><code>yum info package</code> — package details"
+                    },
+                    {
+                        text: "RPM — Low-level package management",
+                        detail: "<code>rpm -qa</code> — list all installed RPM packages<br><code>rpm -qi package</code> — package info<br><code>rpm -ivh package.rpm</code> — install from file<br><code>rpm -e package</code> — remove package"
+                    },
+                    {
+                        text: "tar — Archive management",
+                        detail: "<strong>Create:</strong> <code>tar -czvf archive.tar.gz /path/</code><br><strong>Extract:</strong> <code>tar -xzvf archive.tar.gz</code><br><strong>List:</strong> <code>tar -tzvf archive.tar.gz</code><br>Flags: <code>c</code>=create, <code>x</code>=extract, <code>z</code>=gzip, <code>v</code>=verbose, <code>f</code>=file"
+                    },
+                    {
+                        text: "zip / unzip",
+                        detail: "<code>zip -r archive.zip folder/</code> — create zip<br><code>unzip archive.zip</code> — extract zip<br><code>unzip -l archive.zip</code> — list contents without extracting"
+                    }
+                ],
+                warnings: ["Always run <code>apt update</code> before <code>apt install</code> to get the latest package info.", "On production servers, test updates in staging first. Use <code>apt upgrade --dry-run</code> to preview changes."],
+                verification: "After installing, verify with <code>which command</code> or <code>command --version</code>. Check service is running with <code>systemctl status</code>.",
+                escalation: "If package installation fails with dependency errors, try <code>sudo apt --fix-broken install</code> or check for repository issues in <code>/etc/apt/sources.list</code>."
+            },
+            {
+                id: "linux-text-processing",
+                title: "Text Processing (grep, awk, sed)",
+                keywords: ["grep", "awk", "sed", "sort", "uniq", "cut", "search text", "filter", "text processing", "regex", "pattern", "log analysis", "linux grep", "linux awk"],
+                symptoms: "<strong>Purpose:</strong> Search, filter, transform, and analyze text data in files and command output.<br><strong>When to use:</strong> Log analysis, data extraction, config file parsing, filtering output.",
+                steps: [
+                    {
+                        text: "grep — Search for patterns",
+                        detail: "<code>grep 'error' /var/log/syslog</code> — find lines with 'error'<br><code>grep -i 'warning' file.txt</code> — case-insensitive<br><code>grep -r 'TODO' /src/</code> — recursive search in directory<br><code>grep -c 'failed' auth.log</code> — count matches<br><code>grep -v 'debug' app.log</code> — exclude lines matching pattern"
+                    },
+                    {
+                        text: "awk — Column extraction & processing",
+                        detail: "<code>awk '{print $1, $4}' access.log</code> — print 1st and 4th columns<br><code>df -h | awk '{print $1, $5}'</code> — extract filesystem and usage%<br><code>awk -F: '{print $1}' /etc/passwd</code> — use ':' as delimiter to list usernames<br><code>awk '$3 > 80 {print $0}' data.txt</code> — print lines where 3rd column > 80"
+                    },
+                    {
+                        text: "sed — Stream editor (find & replace)",
+                        detail: "<code>sed 's/old/new/g' file.txt</code> — replace all 'old' with 'new' (display only)<br><code>sed -i 's/old/new/g' file.txt</code> — in-place edit<br><code>sed -n '10,20p' file.txt</code> — print lines 10-20<br><code>sed '/^#/d' config.conf</code> — remove comment lines"
+                    },
+                    {
+                        text: "sort, uniq, cut — Data shaping",
+                        detail: "<code>sort file.txt</code> — sort alphabetically<br><code>sort -n file.txt</code> — sort numerically<br><code>sort file.txt | uniq -c</code> — count unique occurrences<br><code>cut -d: -f1 /etc/passwd</code> — extract first field with ':' delimiter"
+                    },
+                    {
+                        text: "Practical examples — Chaining commands",
+                        detail: "<strong>Top 10 IPs in access log:</strong><br><code>awk '{print $1}' access.log | sort | uniq -c | sort -rn | head -10</code><br><br><strong>Failed SSH logins:</strong><br><code>grep 'Failed password' /var/log/auth.log | awk '{print $11}' | sort | uniq -c | sort -rn</code><br><br><strong>Find errors in last hour:</strong><br><code>journalctl --since '1 hour ago' | grep -i error</code>"
+                    }
+                ],
+                warnings: ["<code>sed -i</code> modifies files in-place — always backup first: <code>sed -i.bak 's/old/new/g' file</code>.", "Complex regex patterns should be tested with <code>grep</code> before using in <code>sed</code> or <code>awk</code>."],
+                verification: "Pipe output through <code>less</code> to review results, or redirect to file: <code>command > output.txt</code>.",
+                escalation: "For complex log analysis needs, consider tools like <code>logrotate</code> for management and ELK Stack for centralized logging."
+            },
+            {
+                id: "linux-shell-scripting",
+                title: "Shell Scripting & Automation",
+                keywords: ["bash", "shell script", "automation", "environment variables", "cron", "scripting", "bash script", "linux script", "automate", "shebang"],
+                symptoms: "<strong>Purpose:</strong> Write bash scripts to automate repetitive tasks.<br><strong>When to use:</strong> Automating backups, health checks, deployments, and system maintenance.",
+                steps: [
+                    {
+                        text: "Script basics — Creating your first script",
+                        detail: "<code>#!/bin/bash</code> — shebang (must be first line)<br><br>Create: <code>nano myscript.sh</code><br>Make executable: <code>chmod +x myscript.sh</code><br>Run: <code>./myscript.sh</code> or <code>bash myscript.sh</code>"
+                    },
+                    {
+                        text: "Variables & environment",
+                        detail: "<code>NAME=\"Linux\"</code> — set variable (no spaces around =)<br><code>echo $NAME</code> — use variable<br><code>export PATH=$PATH:/opt/bin</code> — add to PATH<br><code>env</code> — list all environment variables<br><code>echo $HOME $USER $SHELL</code> — common built-in variables"
+                    },
+                    {
+                        text: "Conditionals & loops",
+                        detail: "<strong>If/else:</strong><br><code>if [ -f /tmp/file.txt ]; then</code><br><code>  echo \"File exists\"</code><br><code>else</code><br><code>  echo \"File not found\"</code><br><code>fi</code><br><br><strong>For loop:</strong><br><code>for server in web1 web2 web3; do</code><br><code>  ping -c 1 $server</code><br><code>done</code>"
+                    },
+                    {
+                        text: "Useful test operators",
+                        detail: "<code>-f file</code> — file exists<br><code>-d dir</code> — directory exists<br><code>-z string</code> — string is empty<br><code>-eq, -ne, -gt, -lt</code> — numeric comparisons<br><code>$?</code> — exit code of last command (0=success)"
+                    },
+                    {
+                        text: "Example: System health check script",
+                        detail: "<code>#!/bin/bash</code><br><code>echo \"=== System Health ===\"</code><br><code>echo \"Hostname: $(hostname)\"</code><br><code>echo \"Uptime: $(uptime -p)\"</code><br><code>echo \"CPU Load: $(cat /proc/loadavg | awk '{print $1, $2, $3}')\"</code><br><code>echo \"Memory: $(free -h | awk '/Mem/{print $3\"/\"$2}')\"</code><br><code>echo \"Disk: $(df -h / | awk 'NR==2{print $5\" used\"}')\"</code><br><code>echo \"Logged Users: $(who | wc -l)\"</code>"
+                    }
+                ],
+                warnings: ["Always test scripts in a safe environment before running on production servers.", "Use <code>set -e</code> at the top of scripts to exit on any error. Add <code>set -x</code> for debug output."],
+                verification: "Run with <code>bash -x script.sh</code> for debug mode. Check exit code with <code>echo $?</code> (0 = success).",
+                escalation: "For complex automation needs, consider Ansible, Terraform, or Python scripts instead of bash."
+            },
+            {
+                id: "linux-project-health-monitor",
+                title: "🛠️ Project: System Health Monitoring Script",
+                keywords: ["linux project", "health monitor", "monitoring script", "system check", "health check", "server monitoring", "beginner project"],
+                symptoms: "<strong>Project Objective:</strong> Create a bash script that monitors system health (CPU, memory, disk, services) and sends alerts.<br><strong>Prerequisites:</strong> Basic Linux CLI knowledge, SSH access to a Linux server.",
+                steps: [
+                    {
+                        text: "Step 1: Create the script file",
+                        detail: "<code>mkdir -p ~/scripts</code><br><code>nano ~/scripts/health_monitor.sh</code><br><br>Add the shebang: <code>#!/bin/bash</code>"
+                    },
+                    {
+                        text: "Step 2: Add system checks",
+                        detail: "Add these checks to the script:<br><code>#!/bin/bash</code><br><code>THRESHOLD=80</code><br><code>LOG=/var/log/health_monitor.log</code><br><code>DATE=$(date '+%Y-%m-%d %H:%M:%S')</code><br><br><code># CPU Load</code><br><code>LOAD=$(cat /proc/loadavg | awk '{print $1}')</code><br><br><code># Memory Usage %</code><br><code>MEM=$(free | awk '/Mem/{printf \"%.0f\", $3/$2*100}')</code><br><br><code># Disk Usage %</code><br><code>DISK=$(df / | awk 'NR==2{gsub(/%/,\"\"); print $5}')</code>"
+                    },
+                    {
+                        text: "Step 3: Add alerting logic",
+                        detail: "<code># Alert if thresholds exceeded</code><br><code>if [ $MEM -gt $THRESHOLD ]; then</code><br><code>  echo \"$DATE [ALERT] Memory at ${MEM}%\" >> $LOG</code><br><code>fi</code><br><code>if [ $DISK -gt $THRESHOLD ]; then</code><br><code>  echo \"$DATE [ALERT] Disk at ${DISK}%\" >> $LOG</code><br><code>fi</code><br><code>echo \"$DATE [OK] CPU=$LOAD MEM=${MEM}% DISK=${DISK}%\" >> $LOG</code>"
+                    },
+                    {
+                        text: "Step 4: Make executable and test",
+                        detail: "<code>chmod +x ~/scripts/health_monitor.sh</code><br><code>./scripts/health_monitor.sh</code><br><code>cat /var/log/health_monitor.log</code> — verify output"
+                    },
+                    {
+                        text: "Step 5: Schedule with cron (every 5 min)",
+                        detail: "<code>crontab -e</code><br>Add: <code>*/5 * * * * /root/scripts/health_monitor.sh</code><br><br>This runs the health check every 5 minutes automatically.<br>💡 <strong>Enhancement:</strong> Add email alerts with <code>mail -s 'Alert' admin@company.com < /var/log/health_monitor.log</code>"
+                    }
+                ],
+                warnings: ["Ensure the log directory exists and has write permissions.", "Test cron jobs by checking <code>grep CRON /var/log/syslog</code>."],
+                verification: "Wait 10 minutes and check <code>cat /var/log/health_monitor.log</code> for entries. Verify cron is running with <code>crontab -l</code>.",
+                escalation: "If the script doesn't run via cron, check syslog for cron errors. Ensure full paths are used in the script (cron has limited PATH)."
+            },
+            {
+                id: "linux-project-backup",
+                title: "🛠️ Project: Automated Backup Script",
+                keywords: ["backup script", "backup automation", "tar backup", "rsync backup", "linux backup", "automated backup", "cron backup"],
+                symptoms: "<strong>Project Objective:</strong> Create an automated backup script that compresses and archives important directories with rotation.<br><strong>Prerequisites:</strong> Basic Linux CLI, storage for backups.",
+                steps: [
+                    {
+                        text: "Step 1: Create backup script",
+                        detail: "<code>nano ~/scripts/backup.sh</code><br><br><code>#!/bin/bash</code><br><code>BACKUP_SRC=\"/var/www /etc /home\"</code><br><code>BACKUP_DST=\"/backup\"</code><br><code>DATE=$(date +%Y%m%d_%H%M%S)</code><br><code>ARCHIVE=\"$BACKUP_DST/backup_$DATE.tar.gz\"</code><br><code>RETENTION=7  # days to keep</code>"
+                    },
+                    {
+                        text: "Step 2: Add backup logic",
+                        detail: "<code># Create backup directory</code><br><code>mkdir -p $BACKUP_DST</code><br><br><code># Create compressed archive</code><br><code>tar -czvf $ARCHIVE $BACKUP_SRC 2>/dev/null</code><br><br><code># Check if backup succeeded</code><br><code>if [ $? -eq 0 ]; then</code><br><code>  echo \"[$DATE] Backup SUCCESS: $ARCHIVE ($(du -sh $ARCHIVE | awk '{print $1}'))\" >> $BACKUP_DST/backup.log</code><br><code>else</code><br><code>  echo \"[$DATE] Backup FAILED!\" >> $BACKUP_DST/backup.log</code><br><code>fi</code>"
+                    },
+                    {
+                        text: "Step 3: Add old backup cleanup",
+                        detail: "<code># Delete backups older than RETENTION days</code><br><code>find $BACKUP_DST -name 'backup_*.tar.gz' -mtime +$RETENTION -delete</code><br><code>echo \"[$DATE] Cleanup: Removed backups older than $RETENTION days\" >> $BACKUP_DST/backup.log</code>"
+                    },
+                    {
+                        text: "Step 4: Make executable and test",
+                        detail: "<code>chmod +x ~/scripts/backup.sh</code><br><code>sudo ./scripts/backup.sh</code><br><code>ls -lh /backup/</code> — verify archive created<br><code>cat /backup/backup.log</code> — check log"
+                    },
+                    {
+                        text: "Step 5: Schedule daily at 2 AM",
+                        detail: "<code>sudo crontab -e</code><br>Add: <code>0 2 * * * /root/scripts/backup.sh</code><br><br>💡 <strong>Enhancement:</strong> Use <code>rsync</code> for remote backups:<br><code>rsync -avz /backup/ user@remote:/offsite-backup/</code>"
+                    }
+                ],
+                warnings: ["Always test backup restoration! A backup you can't restore is useless.", "Monitor backup sizes — unexpected growth may indicate issues."],
+                verification: "Test restore: <code>tar -xzvf /backup/backup_LATEST.tar.gz -C /tmp/test_restore/</code>. Verify files are intact.",
+                escalation: "If backups fail, check disk space (<code>df -h</code>), permissions, and verify source directories exist."
+            }
+        ]
     }
 };
