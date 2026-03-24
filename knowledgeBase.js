@@ -1820,5 +1820,325 @@ const KNOWLEDGE_BASE = {
                 escalation: "If <code>dmesg</code> reports severe I/O hardware faults or thermal limits constantly tripping, engage the data center or cloud provider for immediate hardware diagnostics."
             }
         ]
+    },
+    docker: {
+        icon: "🐳",
+        title: "Docker Support",
+        description: "L1-L3 troubleshooting, architecture, commands, and security for Docker environments.",
+        issues: [
+            {
+                id: "docker-core-image",
+                title: "Core Docker Image Commands",
+                keywords: ["docker image", "pull", "images", "rmi", "build", "tag", "history", "inspect image", "l1", "layer"],
+                symptoms: "<strong>Purpose:</strong> Manage application templates (images) and optimize disk usage.<br><strong>Common queries:</strong> How to download an image, check image layers, or delete unused images.",
+                steps: [
+                    {
+                        text: "docker images / docker image ls",
+                        detail: "<strong>WHAT:</strong> Lists all locally stored Docker images.<br><strong>WHY:</strong> To verify if an image is downloaded and check its size/tag."
+                    },
+                    {
+                        text: "docker pull <image>:<tag>",
+                        detail: "<strong>WHAT:</strong> Downloads an image from a registry (e.g., Docker Hub).<br><strong>WHY:</strong> Required before running a container if the image isn't local. Always use a specific tag, not <code>latest</code>, for production."
+                    },
+                    {
+                        text: "docker rmi <image_id>",
+                        detail: "<strong>WHAT:</strong> Removes a local image.<br><strong>WHY:</strong> Frees up disk space. Fails if a stopped/running container is currently using it."
+                    },
+                    {
+                        text: "docker history <image>",
+                        detail: "<strong>WHAT:</strong> Shows the layers the image is built from.<br><strong>WHY/L2:</strong> Useful for debugging bloated images and seeing exactly what commands were run during <code>docker build</code>."
+                    },
+                    {
+                        text: "docker inspect <image>",
+                        detail: "<strong>WHAT:</strong> Returns deep metadata in JSON format.<br><strong>WHY/L2:</strong> Find the default exposed ports, ENV variables, and entrypoint of a black-box image."
+                    }
+                ],
+                warnings: ["Never use the <code>latest</code> tag in production! It breaks reproducibility.", "Using <code>docker rmi -f</code> forces deletion but can leave dangling layers."],
+                verification: "Run <code>docker images</code> to ensure the image was downloaded or successfully deleted.",
+                escalation: "If <code>docker pull</code> fails, check DNS/Network (L2) or registry authentication credentials (<code>docker login</code>)."
+            },
+            {
+                id: "docker-core-container",
+                title: "Core Container Commands",
+                keywords: ["docker run", "docker ps", "docker stop", "docker start", "docker rm", "docker exec", "docker logs", "l1", "container"],
+                symptoms: "<strong>Purpose:</strong> Manage the lifecycle of running applications.<br><strong>Common queries:</strong> How to start, stop, enter, or view logs for a container.",
+                steps: [
+                    {
+                        text: "docker run [options] <image>",
+                        detail: "<strong>WHAT:</strong> Creates and starts a new container.<br><strong>OPTIONS:</strong><br><code>-d</code> (Detached/background)<br><code>-p 8080:80</code> (Port map HOST:CONTAINER)<br><code>-v /host:/cont</code> (Mount volume)<br><code>--name my_app</code> (Assign custom name)"
+                    },
+                    {
+                        text: "docker ps & docker ps -a",
+                        detail: "<strong>WHAT:</strong> Lists running containers. <code>-a</code> shows stopped/failed containers too.<br><strong>WHY:</strong> The most important L1 command to check status."
+                    },
+                    {
+                        text: "docker stop vs docker kill",
+                        detail: "<strong>stop:</strong> Sends SIGTERM (graceful shutdown, waits 10s). use this.<br><strong>kill:</strong> Sends SIGKILL (instant crash). Only use if frozen."
+                    },
+                    {
+                        text: "docker exec -it <container> /bin/sh",
+                        detail: "<strong>WHAT:</strong> Opens an interactive shell inside a running container.<br><strong>WHY/L2:</strong> Critical for troubleshooting live apps (checking config files, testing local network)."
+                    },
+                    {
+                        text: "docker logs -f <container>",
+                        detail: "<strong>WHAT:</strong> Streams the STDOUT/STDERR of the container application.<br><strong>WHY/L2:</strong> The primary way to diagnose why an application crashed or is throwing 500 errors."
+                    }
+                ],
+                warnings: ["Do not run stateful databases in Docker without explicitly defining volume mounts, or data will be lost on <code>docker rm</code>."],
+                verification: "Run <code>docker ps</code> to confirm the container's status is 'Up' and not 'Restarting'.",
+                escalation: "If a container immediately exits after `docker run`, view the crash reason with <code>docker logs <container_name></code>."
+            },
+            {
+                id: "docker-volumes",
+                title: "Volumes & Persistent Storage",
+                keywords: ["volume", "storage", "docker volume create", "mount", "persistent", "data missing", "l2"],
+                symptoms: "<strong>Purpose:</strong> Provide persistent data storage independent of the container lifecycle.<br><strong>Common queries:</strong> Data is lost when container restarts, database needs permanent storage.",
+                steps: [
+                    {
+                        text: "docker volume create <name>",
+                        detail: "<strong>WHAT:</strong> Creates a managed Docker volume.<br><strong>WHY:</strong> Docker-managed volumes are safer, faster, and easier to backup than bind mounts to the host OS."
+                    },
+                    {
+                        text: "docker run -v vs --mount",
+                        detail: "<strong>-v:</strong> Old syntax. E.g., <code>-v my_vol:/app/data</code><br><strong>--mount:</strong> Modern, explicit syntax. E.g., <code>--mount type=volume,src=my_vol,dst=/app/data</code>"
+                    },
+                    {
+                        text: "docker volume inspect <name>",
+                        detail: "<strong>WHAT:</strong> Shows where the volume actually lives on the host.<br><strong>WHY/L2:</strong> Usually outputs a path like <code>/var/lib/docker/volumes/.../_data</code> which is where the physical files are."
+                    },
+                    {
+                        text: "Debugging: Permission Denied",
+                        detail: "<strong>Symptom:</strong> Container logs say 'Permission denied' writing to mounted volume.<br><strong>L2 Fix:</strong> The host directory UID must match the container user's UID. Run <code>docker exec -it <cont> id</code> to find the UID, then `chown` the host directory."
+                    }
+                ],
+                warnings: ["Never run <code>docker volume prune</code> in production without absolute certainty—it permanently deletes all unattached volumes and their data."],
+                verification: "Enter the container (<code>docker exec</code>), create a file in the volume, <code>docker rm -f</code> the container, spin up a new one, and verify the file is still there.",
+                escalation: "If using NFS or cloud volumes (EFS/Azure Files) and facing heavy latency, escalate to L3 to design a block-storage architectural fix."
+            },
+            {
+                id: "docker-networking",
+                title: "Networking & Connectivity",
+                keywords: ["network", "docker network ls", "port not accessible", "bridge", "host", "dns", "l2"],
+                symptoms: "<strong>Purpose:</strong> Control how containers communicate with each other and the outside world.<br><strong>Common queries:</strong> Container A can't reach Container B, or Port 80 exposed but website won't load from host.",
+                steps: [
+                    {
+                        text: "Network Types",
+                        detail: "<strong>bridge (default):</strong> Isolated overlay. Containers can talk via IP.<br><strong>host:</strong> Container uses the host's actual network stack (port 80 in container = port 80 on host). Less secure.<br><strong>none:</strong> No networking."
+                    },
+                    {
+                        text: "docker network create <name>",
+                        detail: "<strong>WHAT:</strong> Creates a custom bridge network.<br><strong>WHY/L2:</strong> Crucial feature: Containers on the <strong>same custom network</strong> can resolve each other by container name via automatic Docker DNS. Default bridge requires manual IPs."
+                    },
+                    {
+                        text: "docker network inspect <network>",
+                        detail: "<strong>WHAT:</strong> Shows the subnet and which containers are attached to it with their IPs.<br><strong>WHY:</strong> Useful to trace why overlapping subnets might be blocking routing."
+                    },
+                    {
+                        text: "Debugging: Port not accessible",
+                        detail: "<strong>L2 Diagnostics:</strong><br>1. Check if bound: <code>docker ps</code> shows <code>0.0.0.0:8080->80/tcp</code>.<br>2. Check host firewall: <code>iptables</code> or <code>ufw</code>.<br>3. <strong>Critical Catch:</strong> The application INSIDE the container must bind to <code>0.0.0.0</code>, NOT <code>127.0.0.1/localhost</code>, otherwise Docker's port forward drops the traffic."
+                    }
+                ],
+                warnings: ["Avoid using the `--net=host` flag unless absolutely necessary for high-throughput edge cases, as it bypasses Docker network isolation completely."],
+                verification: "Run <code>docker exec -it cont_A ping cont_B</code>. If it replies, custom network DNS is working.",
+                escalation: "For complex multi-host overlay networks (Swarm/Kubernetes) dropping packets, escalate to L3 for MTU inspection or CNI debugging."
+            },
+            {
+                id: "docker-build",
+                title: "Dockerfile & Image Building",
+                keywords: ["dockerfile", "build", "from", "run", "cmd", "entrypoint", "copy", "env", "expose", "user", "l2"],
+                symptoms: "<strong>Purpose:</strong> Create custom immutable images for CI/CD and deployment.<br><strong>Common queries:</strong> Build fails, image size is too large, differences between CMD and ENTRYPOINT.",
+                steps: [
+                    {
+                        text: "FROM, RUN, COPY",
+                        detail: "<code>FROM node:18-alpine</code> → Base image (use alpine/slim to save space).<br><code>COPY package.json .</code> → Injects files.<br><code>RUN npm install</code> → Executes during the BUILD process to install dependencies."
+                    },
+                    {
+                        text: "CMD vs ENTRYPOINT",
+                        detail: "<code>ENTRYPOINT [\"node\", \"server.js\"]</code> → The hardcoded executable to run.<br><code>CMD [\"--port\", \"8080\"]</code> → Default arguments passed to entrypoint. Can be easily overridden by <code>docker run myapp --port 9000</code>."
+                    },
+                    {
+                        text: "USER (Security)",
+                        detail: "<code>USER node</code> → <strong>L3 Security:</strong> Never run as root inside the container if possible. Always drop privileges before the CMD layer."
+                    },
+                    {
+                        text: "docker build -t app:v1 .",
+                        detail: "<strong>WHAT:</strong> Compiles the Dockerfile in the current directory (<code>.</code>) into a tagged image."
+                    },
+                    {
+                        text: "L3 Optimization: Layer Caching",
+                        detail: "Docker caches each line of a Dockerfile. To speed up builds, copy package/dependency files FIRST, run install, and copy source code LAST. If source code changes, dependencies don't have to reinstall."
+                    }
+                ],
+                warnings: ["Do not put secrets, API keys, or passwords inside a Dockerfile ENV or RUN command. Anyone who pulls the image can read them using <code>docker history</code>."],
+                verification: "Run <code>docker run -rm -it my_image sh</code> to jump inside and verify files are precisely where you expect them.",
+                escalation: "If build fails behind a corporate proxy, you must pass <code>--build-arg HTTP_PROXY=...</code> to the build command."
+            },
+            {
+                id: "docker-compose",
+                title: "Docker Compose (Multi-Container)",
+                keywords: ["docker-compose", "compose", "up", "down", "docker-compose.yml", "orchestration", "multi-container", "l2"],
+                symptoms: "<strong>Purpose:</strong> Automate deployment of dependent services (e.g., App + Database + Redis) via YAML.<br><strong>Common queries:</strong> App can't connect to DB on startup, syntax errors in YAML.",
+                steps: [
+                    {
+                        text: "docker-compose up -d",
+                        detail: "<strong>WHAT:</strong> Reads <code>docker-compose.yml</code>, creates volumes/networks, and starts all services in the background."
+                    },
+                    {
+                        text: "docker-compose down -v",
+                        detail: "<strong>WHAT:</strong> Stops and removes all containers and networks. The <code>-v</code> flag ALSO deletes attached volumes (destroys data cleanly)."
+                    },
+                    {
+                        text: "docker-compose logs -f",
+                        detail: "<strong>WHAT:</strong> Streams interleaved logs from ALL services at once. Great for debugging full-stack issues."
+                    },
+                    {
+                        text: "Debugging: DB Startup Race Conditions",
+                        detail: "<strong>Symptom:</strong> Web app crashes because DB isn't ready.<br><strong>L2 Fix:</strong> Use <code>depends_on:</code> in the YAML, but note it only waits for container start, not DB readiness. For true readiness, implement a retry loop or wait-for-it script in your App's entrypoint."
+                    }
+                ],
+                warnings: ["Docker Compose is fantastic for single-host development and small deployments, but Kubernetes/ECS should be used for highly available multi-host production."],
+                verification: "Run <code>docker-compose ps</code> to ensure all services in the stack are 'Up'.",
+                escalation: "If YAML validation fails, check indentation carefully. YAML is extremely strict about tabs vs spaces."
+            },
+            {
+                id: "docker-monitor",
+                title: "Monitoring & Performance",
+                keywords: ["stats", "top", "events", "system df", "cpu", "memory", "performance", "bottleneck", "l2"],
+                symptoms: "<strong>Purpose:</strong> Identify performance bottlenecks, CPU/Memory limits, and disk consumption.<br><strong>Common queries:</strong> Server is out of disk space, application is running slow.",
+                steps: [
+                    {
+                        text: "docker stats",
+                        detail: "<strong>WHAT:</strong> A real-time updating dashboard (like Linux <code>top</code>) for all running containers.<br><strong>WHY/L2:</strong> Instantly shows exact CPU %, Memory %, Network I/O, and Disk I/O per container. Crucial for identifying memory leaks."
+                    },
+                    {
+                        text: "docker system df",
+                        detail: "<strong>WHAT:</strong> Shows Docker's exact disk usage broken down by Images, Containers, Volumes, and Build Cache.<br><strong>WHY:</strong> First step when investigating 'No space left on device'."
+                    },
+                    {
+                        text: "docker top <container>",
+                        detail: "<strong>WHAT:</strong> Shows the actual Linux host process IDs (PIDs) running inside the container.<br><strong>WHY:</strong> Useful to map a rogue high-CPU process on the host directly to the container responsible."
+                    },
+                    {
+                        text: "docker inspect (Resource Limits)",
+                        detail: "<strong>L3 Investigation:</strong> Run <code>docker inspect cont_name | grep Memory</code> to see if memory limits were applied. If physical RAM is exhausted but the container has no hard limit, it can crash the entire host OS."
+                    }
+                ],
+                warnings: ["<code>docker stats</code> only shows memory used by the container's processes; it may include some OS cache memory, making it look slightly higher than expected."],
+                verification: "Monitor <code>docker stats</code> while running a load test against the container to calculate required production CPU/RAM limits.",
+                escalation: "If IOPS (Disk I/O) are consistently maxed out in `docker stats`, escalate to cloud engineers to increase the disk volume's provisioned IOPS."
+            },
+            {
+                id: "docker-debug-restarts",
+                title: "Debugging: Container Crash Loops",
+                keywords: ["restarting", "crashloop", "exits immediately", "keeps restarting", "l2", "troubleshoot", "debug", "restart=always"],
+                symptoms: "<strong>Purpose:</strong> Diagnose why a container stays in a 'Restarting' state or exits exactly 1 second after starting.<br><strong>Common queries:</strong> 'My container won't stay up'.",
+                steps: [
+                    {
+                        text: "Step 1: Inspect the logs",
+                        detail: "<code>docker logs <container></code><br><strong>WHY/L2:</strong> 99% of the time, the application itself is throwing a fatal error (e.g., \"cannot connect to db\", \"missing config file\", or \"syntax error\"). Fix the app error, fix the loop."
+                    },
+                    {
+                        text: "Step 2: Check for missing foreground process",
+                        detail: "<strong>L2 RCA:</strong> Docker containers ONLY stay alive if the main PID 1 process stays running in the foreground. If your script launches a webserver in the background (using <code>&</code> or <code>service nginx start</code>) and then the script finishes, Docker thinks the container is done and kills it."
+                    },
+                    {
+                        text: "Step 3: Override Entrypoint to debug",
+                        detail: "If it crashes too fast to log, override entrypoint to a sleep command:<br><code>docker run -it --entrypoint /bin/sh my_image</code><br>Once inside, manually run the app command to see exactly what fails."
+                    },
+                    {
+                        text: "Step 4: Check 'Restart' policy",
+                        detail: "If using <code>--restart always</code>, Docker will reboot the container relentlessly, masking the error. Remove the policy while troubleshooting."
+                    }
+                ],
+                warnings: ["Do not try to SSH into an actively restarting container; it will kick you out immediately. Use Step 3 instead."],
+                verification: "Successful fix results in <code>docker ps</code> showing status 'Up XXX minutes' steadily increasing.",
+                escalation: "If logs show 'Exec format error', the image was built for ARM (Mac M1/M2) but is running on x86_64 Cloud Linux. Rebuild with <code>buildx --platform linux/amd64</code>."
+            },
+            {
+                id: "docker-debug-oom",
+                title: "Debugging: OOMKilled & Limits",
+                keywords: ["oomkilled", "oom", "high memory", "killed", "limit", "cgroups", "l3", "memory leak"],
+                symptoms: "<strong>Purpose:</strong> Resolve scenarios where containers are being forcibly assassinated by the Linux kernel due to memory starvation.<br><strong>Symptom:</strong> Container randomly disappears or stops responding.",
+                steps: [
+                    {
+                        text: "Step 1: Check exit code",
+                        detail: "Run <code>docker ps -a</code>. If you see <code>Exited (137)</code>, it means SIGKILL (forced kill). This is the classic signature of an OOM (Out Of Memory) event."
+                    },
+                    {
+                        text: "Step 2: Inspect the Docker daemon",
+                        detail: "Run <code>docker inspect <container> | grep OOMKilled</code>. If true, Docker intentionally killed it because it breached its assigned <code>--memory</code> limit."
+                    },
+                    {
+                        text: "Step 3: Inspect Host Kernel Logs",
+                        detail: "<strong>L3 RCA:</strong> Run <code>dmesg -T | grep -i oom-killer</code> on the host OS. If found, the container exhausted all physical server RAM, and the Linux kernel stepped in to save the OS."
+                    },
+                    {
+                        text: "Step 4: Resolution & Prevention",
+                        detail: "<strong>Fix 1 (App Level):</strong> Fix the memory leak in the application code.<br><strong>Fix 2 (Java specific):</strong> Java does not respect container boundaries natively in older JVMs. Ensure `-XX:MaxRAMPercentage=75.0` is passed to the JVM.<br><strong>Fix 3 (Infrastructure):</strong> Always set hard limits (<code>docker run -m 512m ...</code>) to ensure one rogue container cannot crash the entire host."
+                    }
+                ],
+                warnings: ["Increasing memory limits blindly usually just delays the inevitable crash if there is an underlying memory leak in the code."],
+                verification: "Monitor <code>docker stats</code> to ensure the container's memory usage plateaus and does not climb infinitely over time.",
+                escalation: "If OOM occurs during an intense traffic spike, escalate to L3 architects to implement horizontal scaling (adding more containers behind a load balancer) rather than vertical scaling (adding memory)."
+            },
+            {
+                id: "docker-advanced",
+                title: "Advanced Maintenance & Pruning",
+                keywords: ["system prune", "cleanup", "disk space", "docker diff", "docker cp", "save", "load", "l3", "maintenance"],
+                symptoms: "<strong>Purpose:</strong> Reclaim disk space safely and manage offline migrations.<br><strong>Common queries:</strong> Servers at 99% disk capacity due to Docker.",
+                steps: [
+                    {
+                        text: "docker system prune -a",
+                        detail: "<strong>WHAT/L3:</strong> The ultimate cleanup command. Deletes all stopped containers, unused networks, dangling images, and build caches.<br><strong>WHY:</strong> Resolves 'disk full' crises instantly. The <code>-a</code> flag forcibly removes all images without at least one container using them."
+                    },
+                    {
+                        text: "docker cp <container>:<path> <local_path>",
+                        detail: "<strong>WHAT:</strong> Copies files/folders between a container and the local filesystem.<br><strong>WHY:</strong> Rapid extraction of core dumps or specific SQLite db files for local developer debugging without needing a volume."
+                    },
+                    {
+                        text: "docker diff <container>",
+                        detail: "<strong>WHAT:</strong> Inspects changes to files or directories on a container’s filesystem since it started.<br><strong>WHY/L3 Security:</strong> Used in forensics. If you see binaries modified here that aren't part of normal app workflow, the container may be compromised."
+                    },
+                    {
+                        text: "docker save / docker load",
+                        detail: "<strong>WHAT:</strong> <code>save</code> archives an image to a .tar file. <code>load</code> imports it.<br><strong>WHY:</strong> Air-gapped environments. Move images via USB/SCP to secure servers with no internet."
+                    }
+                ],
+                warnings: ["<code>docker system prune</code> can potentially destroy valuable cached build layers, slowing down the next CI/CD pipeline pipeline significantly."],
+                verification: "Run <code>docker system df</code> before and after pruning to report exact gigabytes of reclaimed space to the team.",
+                escalation: "If disk space is still full after pruning, check <code>/var/lib/docker/containers/*/*.log</code>. Uncapped container JSON logs can grow infinitely. Implement log rotation in <code>daemon.json</code>."
+            },
+            {
+                id: "docker-security",
+                title: "Production Security Best Practices",
+                keywords: ["security", "production", "root", "socket", "best practices", "secrets", "l3", "architecture"],
+                symptoms: "<strong>Purpose:</strong> L3 Architectural guidance to secure Docker environments in enterprise contexts.<br><strong>When to use:</strong> System design phases, security audits, or mitigating container escape vulnerabilities.",
+                steps: [
+                    {
+                        text: "1. Never run applications as root",
+                        detail: "<strong>WHY:</strong> If a hacker breaches the app and breaks out of the container (container escape), they have root host access. Use <code>USER nonroot</code> in the Dockerfile."
+                    },
+                    {
+                        text: "2. Limit Resources (CPU/Memory)",
+                        detail: "<strong>WHY:</strong> Prevents \"noisy neighbor\" problems and thwarts Denial of Service (DoS) attacks from crashing the host node."
+                    },
+                    {
+                        text: "3. Defending the Docker Socket",
+                        detail: "<strong>WHY:</strong> Never mount <code>/var/run/docker.sock</code> into a container unless absolutely necessary (like Portainer). <strong>Access to the socket equals full root access to the host machine.</strong>"
+                    },
+                    {
+                        text: "4. Immutable Image Tags",
+                        detail: "<strong>WHY:</strong> Do not deploy <code>image:latest</code>. Deploy <code>image:v1.2.4</code>. 'Latest' can change underneath you, breaking production silently on the next restart."
+                    },
+                    {
+                        text: "5. Secret Management",
+                        detail: "<strong>WHY:</strong> Never bake API keys into Dockerfiles or push them to registries. Pass them at runtime using <code>--env-file</code> or secure secret managers (AWS Secrets Manager, HashiCorp Vault)."
+                    }
+                ],
+                warnings: ["Treat Docker containers as process-level isolation, not hypervisor-level virtualization. A shared kernel means sophisticated exploits can still traverse containers."],
+                verification: "Run automated container vulnerability scanners (like Trivy or Clair) inside the CI/CD pipeline to catch high-severity CVEs before production deploy.",
+                escalation: "If a security breach is suspected (crypto miner found via `top`), immediately isolate the container via network rules, capture a memory dump for forensics, and then terminate it."
+            }
+        ]
     }
 };
