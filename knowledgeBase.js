@@ -1663,6 +1663,161 @@ const KNOWLEDGE_BASE = {
                 warnings: ["Always test backup restoration! A backup you can't restore is useless.", "Monitor backup sizes — unexpected growth may indicate issues."],
                 verification: "Test restore: <code>tar -xzvf /backup/backup_LATEST.tar.gz -C /tmp/test_restore/</code>. Verify files are intact.",
                 escalation: "If backups fail, check disk space (<code>df -h</code>), permissions, and verify source directories exist."
+            },
+            {
+                id: "linux-monitor-cpu",
+                title: "CPU & System Load Monitoring",
+                keywords: ["cpu", "top", "htop", "mpstat", "uptime", "vmstat", "sar", "load average", "high cpu", "processor", "performance"],
+                symptoms: "<strong>Purpose:</strong> Analyze CPU utilization, system load, and identify resource-heavy processes.<br><strong>When to use:</strong> System feels sluggish, fans spinning loudly, high load alerts.",
+                steps: [
+                    {
+                        text: "uptime — Quick load check",
+                        detail: "<code>uptime</code> — Shows how long system is running and load averages (1min, 5min, 15min)<br>💡 <strong>Rule of thumb:</strong> A load average higher than the number of CPU cores indicates the system is overloaded. Run <code>nproc</code> to count cores."
+                    },
+                    {
+                        text: "top & htop — Real-time process monitoring",
+                        detail: "<code>top</code> — Live view of processes. Press <code>P</code> to sort by CPU usage, <code>k</code> to kill a PID.<br><code>htop</code> — Interactive, colorized viewer (shows individual CPU core bars). Better for visual analysis than top."
+                    },
+                    {
+                        text: "mpstat — Per-CPU statistics",
+                        detail: "<code>mpstat -P ALL 1</code> — Shows CPU usage per core, updating every 1 second.<br>Useful for finding single-threaded applications pegging a single core while others are idle."
+                    },
+                    {
+                        text: "vmstat — Virtual memory & system stats",
+                        detail: "<code>vmstat 1 5</code> — Outputs stats every 1s for 5 iterations.<br>Watch the 'r' column (runnable processes waiting for CPU) and 'us' / 'sy' / 'id' (user, system, idle CPU percentages)."
+                    },
+                    {
+                        text: "sar -u — Historical CPU data",
+                        detail: "<code>sar -u</code> — Look at CPU load throughout the day (requires sysstat package).<br>Helpful to identify if a CPU spike happened during a scheduled chron job."
+                    }
+                ],
+                warnings: ["<code>mpstat</code> requires the <code>sysstat</code> package to be installed.", "High load doesn't always equal high CPU; it could be processes stuck in I/O wait (check the 'wa' column in top/vmstat)."],
+                verification: "Run <code>top</code> or <code>htop</code> to verify that CPU usage drops after successfully identifying and stopping a rogue process.",
+                escalation: "If high CPU correlates with network traffic, it may be a DoS attack. If it's a database server experiencing queries constantly pegging CPU, escalate to DBA for query optimization."
+            },
+            {
+                id: "linux-monitor-mem",
+                title: "Memory Monitoring",
+                keywords: ["memory", "ram", "swap", "free", "meminfo", "sar -r", "oom", "out of memory", "leak"],
+                symptoms: "<strong>Purpose:</strong> Track volatile memory usage, swap activity, and detect memory leaks.<br><strong>When to use:</strong> Services crashing randomly, 'Out of Memory' (OOM) errors in logs, extreme system sluggishness.",
+                steps: [
+                    {
+                        text: "free -h — Quick RAM overview",
+                        detail: "<code>free -h</code> — Human-readable output of total, used, free, and available memory.<br>💡 <strong>Crucial:</strong> Look at the <strong>available</strong> column, not the <strong>free</strong> column. Linux caches files in RAM, so 'free' might look low even when the system is healthy."
+                    },
+                    {
+                        text: "vmstat — Swap and paging analysis",
+                        detail: "<code>vmstat 1</code> — Real-time memory and swap tracking.<br>Pay attention to the <strong>si</strong> (swap in) and <strong>so</strong> (swap out) columns. High values here mean active swapping, which drastically slows down performance (thrashing)."
+                    },
+                    {
+                        text: "top / htop — Per-process RAM usage",
+                        detail: "In <code>top</code>, press <code>M</code> to sort all processes by memory footprint.<br>Watch the <strong>RES</strong> (Resident Set Size - actual RAM used) column rather than VIRT (virtual mapped space)."
+                    },
+                    {
+                        text: "cat /proc/meminfo — Deep memory detail",
+                        detail: "<code>cat /proc/meminfo</code> — Granular kernel metrics including total Cached, Buffers, MemAvailable, Dirty (pending disk writes), and SwapTotal."
+                    },
+                    {
+                        text: "Check for OOM Killer events",
+                        detail: "<code>dmesg -T | grep -i oom-killer</code> — Checks kernel logs to see if the OS had to forcibly kill processes to free up RAM to survive."
+                    }
+                ],
+                warnings: ["Do not forcefully drop caches (<code>echo 3 > /proc/sys/vm/drop_caches</code>) on a production server unless necessary; it temporarily harms performance as files must be re-read from slow storage."],
+                verification: "After restarting a memory-leaking service, run <code>free -h</code> to confirm the 'available' memory returns to normal levels.",
+                escalation: "If OOM killer is frequently killing critical services (like SQL databases), you must either add physical RAM or apply strict memory limits (Cgroups/systemd slices)."
+            },
+            {
+                id: "linux-monitor-disk",
+                title: "Disk Usage & I/O Performance",
+                keywords: ["disk", "storage", "i/o", "df", "du", "lsblk", "mount", "iostat", "dstat", "sar -d", "io wait", "disk space"],
+                symptoms: "<strong>Purpose:</strong> Monitor storage capacity, block devices, and read/write speeds.<br><strong>When to use:</strong> 'No space left on device' errors, slow database queries, applications hanging on disk writes.",
+                steps: [
+                    {
+                        text: "df & du — Capacity checking",
+                        detail: "<code>df -h</code> — Quick view of total, used, and available space per filesystem.<br><code>df -i</code> — Check inode usage (if this hits 100%, you can't create new files even if space exists).<br><code>du -sh /var/log/* | sort -rh | head -10</code> — Find top 10 largest folders/files."
+                    },
+                    {
+                        text: "lsblk & mount — Block devices",
+                        detail: "<code>lsblk</code> — Tree view of physical disks, partitions, and LVM volumes.<br><code>mount | column -t</code> — See how and where filesystems are attached, and what options (e.g., read-only) are active."
+                    },
+                    {
+                        text: "iostat -x — Disk speed & bottlenecks",
+                        detail: "<code>iostat -xz 1</code> — Real-time extended I/O metrics.<br>Focus on <strong>%util</strong> (how busy the disk is) and <strong>await</strong> (how long requests wait). If %util is near 100% and await is high, the disk is a severe bottleneck."
+                    },
+                    {
+                        text: "vmstat — I/O Wait checks",
+                        detail: "<code>vmstat 1</code> — Look at the <strong>wa</strong> column under CPU. High <strong>wa</strong> (I/O wait) means the CPU is sitting idle doing nothing while waiting for the slow disk to respond."
+                    },
+                    {
+                        text: "dstat — Combined metrics",
+                        detail: "<code>dstat</code> — Excellent tool that puts CPU, disk read/write, network, and paging on one scrolling colorized screen.<br>(May require installation: <code>sudo apt install dstat</code>)"
+                    }
+                ],
+                warnings: ["Constantly running heavy <code>find</code> or <code>du</code> operations across large filesystems can itself cause high disk I/O load."],
+                verification: "After clearing logs or resizing a volume, verify new space availability with <code>df -h /path</code>.",
+                escalation: "If a disk suddenly switches to 'read-only' mode, check <code>dmesg</code> for hardware/filesystem errors. File system corruption may require unmounting and running <code>fsck</code>."
+            },
+            {
+                id: "linux-monitor-net",
+                title: "Network Monitoring & Bandwidth",
+                keywords: ["network", "bandwidth", "ip addr", "ip route", "ss", "netstat", "ping", "traceroute", "iftop", "nload", "tcpdump", "port", "packet"],
+                symptoms: "<strong>Purpose:</strong> Diagnose connectivity layer, inspect open ports/sockets, and measure bandwidth usage.<br><strong>When to use:</strong> Website unreachable, API timeouts, slow download speeds, suspecting a traffic flood.",
+                steps: [
+                    {
+                        text: "ip — Interfaces and routing",
+                        detail: "<code>ip addr show</code> — View IPs assigned to active network cards.<br><code>ip route show</code> — Validate the default gateway and routing table."
+                    },
+                    {
+                        text: "ss / netstat — Open ports & sockets",
+                        detail: "<code>ss -tulnp</code> — Shows all Listening, TCP/UDP sockets natively with their attached Process IDs.<br><code>ss -s</code> — Aggregate summary of open, closed, mapped, and waiting connections."
+                    },
+                    {
+                        text: "Connectivity & Pathing",
+                        detail: "<code>ping -c 4 8.8.8.8</code> — Basic reachability and packet loss.<br><code>traceroute example.com</code> — Identifies exact network hops and where latency spikes occur."
+                    },
+                    {
+                        text: "iftop & nload — Bandwidth monitoring",
+                        detail: "<code>iftop -n</code> — Shows a live scoreboard of point-to-point bandwidth usage (who is talking to whom, and how fast).<br><code>nload</code> — Simple, visual graphs of inbound vs outbound overall bandwidth per interface."
+                    },
+                    {
+                        text: "tcpdump — Packet sniffing",
+                        detail: "<code>sudo tcpdump -i eth0 port 80</code> — Captures live HTTP traffic on eth0 interface.<br><code>tcpdump -w capture.pcap</code> — Save traffic to a file for analysis in Wireshark."
+                    }
+                ],
+                warnings: ["<code>tcpdump</code> requires elevated privileges and can capture sensitive plaintext data depending on the protocol.", "If using <code>netstat</code> or <code>ss</code> on busy servers, avoid resolving hostnames (use <code>-n</code>) to prevent DNS lag."],
+                verification: "Verify that a service has successfully bound to a port by using <code>ss -tulnp | grep :80</code>.",
+                escalation: "If basic connectivity works but bandwidth is capped/dropping, engage network engineering to check firewalls, switch port configurations, or AWS VPC flow logs."
+            },
+            {
+                id: "linux-monitor-sys",
+                title: "System Hardware & Log Monitoring",
+                keywords: ["system", "hardware", "logs", "dmesg", "journalctl", "systemctl status", "sensors", "hostnamectl", "crontab", "health"],
+                symptoms: "<strong>Purpose:</strong> Inspect OS-level events, service daemon health, temperature, and scheduled tasks.<br><strong>When to use:</strong> Unexplained reboots, daemon start failures, kernel panics, or missing cron executions.",
+                steps: [
+                    {
+                        text: "journalctl — Master system log",
+                        detail: "<code>journalctl -xe</code> — Shows recent logs and errors with context details.<br><code>journalctl -u nginx --since \"10 min ago\"</code> — Filters logs specifically for a target service over time.<br><code>journalctl -f</code> — Live follow (similar to tail -f)."
+                    },
+                    {
+                        text: "systemctl — Service health",
+                        detail: "<code>systemctl status sshd</code> — Checks if a service is Active/Running, failed, or masked, plus recent log lines.<br><code>systemctl list-units --state=failed</code> — Quick check for any dead/failed services system-wide."
+                    },
+                    {
+                        text: "dmesg — Hardware & Kernel Ring Buffer",
+                        detail: "<code>dmesg -T | tail -n 50</code> — View recent kernel-level occurrences with timestamps.<br>This is the first place to look for hardware failures, failing hard sectors, or driver module crashes."
+                    },
+                    {
+                        text: "hostnamectl & crontab",
+                        detail: "<code>hostnamectl</code> — Confirms exactly which Linux distribution, kernel version, and architecture is running.<br><code>crontab -l</code> / <code>sudo crontab -l</code> — Inspect the active user/root scheduled automated tasks."
+                    },
+                    {
+                        text: "sensors — Temperature checks",
+                        detail: "<code>sensors</code> — (requires <code>lm-sensors</code> package). Reads CPU, motherboard, and GPU thermals.<br>Critical for bare-metal servers to ensure they aren't thermally throttling."
+                    }
+                ],
+                warnings: ["Systemd journal logs are binary and cannot be viewed via `cat`; you must use <code>journalctl</code>.", "Always check <code>/var/log/syslog</code> (or <code>/var/log/messages</code> on RHEL) if journalctl is unsupported or corrupted."],
+                verification: "After addressing a service crash, run <code>systemctl restart service</code> followed by <code>systemctl status service</code> to verify green 'active (running)' state.",
+                escalation: "If <code>dmesg</code> reports severe I/O hardware faults or thermal limits constantly tripping, engage the data center or cloud provider for immediate hardware diagnostics."
             }
         ]
     }
