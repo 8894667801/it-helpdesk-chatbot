@@ -2138,6 +2138,65 @@ const KNOWLEDGE_BASE = {
                 warnings: ["Treat Docker containers as process-level isolation, not hypervisor-level virtualization. A shared kernel means sophisticated exploits can still traverse containers."],
                 verification: "Run automated container vulnerability scanners (like Trivy or Clair) inside the CI/CD pipeline to catch high-severity CVEs before production deploy.",
                 escalation: "If a security breach is suspected (crypto miner found via `top`), immediately isolate the container via network rules, capture a memory dump for forensics, and then terminate it."
+            },
+            {
+                id: "docker-100-commands",
+                title: "Top 100 Most-Used Docker Commands",
+                keywords: ["100 commands", "cheat sheet", "top commands", "all commands", "docker commands list", "reference", "commands"],
+                symptoms: "<strong>Purpose:</strong> A complete L1-L3 cheat sheet of the 100 most important Docker commands grouped by logical domains.<br><strong>When to use:</strong> Quick reference for checking exact syntax and the 'WHY' behind each command.",
+                steps: [
+                    {
+                        text: "1. Info & Environment",
+                        detail: "<code>docker version</code>: Verify client/server versions.<br><code>docker info</code>: Full system status.<br><code>docker context ls</code>: List environments.<br><code>docker context use</code>: Switch environments."
+                    },
+                    {
+                        text: "2. Image Management",
+                        detail: "<code>docker images</code>: List local images.<br><code>docker pull IMAGE</code>: Download image.<br><code>docker push IMAGE</code>: Upload image.<br><code>docker rmi IMAGE</code>: Remove unused images.<br><code>docker image prune -a</code>: Remove ALL unused images (L3).<br><code>docker inspect IMAGE</code>: View metadata.<br><code>docker history IMAGE</code>: Analyze layers/size.<br><code>docker save/load</code>: Export/Import as tar.<br><code>docker tag IMAGE</code>: Version control."
+                    },
+                    {
+                        text: "3. Container Lifecycle (L1)",
+                        detail: "<code>docker run IMAGE</code>: Create + start.<br><code>docker ps -a</code>: List all containers.<br><code>docker start/stop CONT</code>: Start or graceful shutdown.<br><code>docker restart CONT</code>: Reboot.<br><code>docker rm -f CONT</code>: Force remove stuck containers.<br><code>docker rename</code>: Rename for clarity."
+                    },
+                    {
+                        text: "4. Debugging & Logs (L1-L2)",
+                        detail: "<code>docker logs -f CONT</code>: Live stream app logs.<br><code>docker exec -it CONT bash</code>: Enter running container shell.<br><code>docker attach CONT</code>: Attach STDOUT/STDIN.<br><code>docker inspect CONT</code>: Deep config analysis.<br><code>docker diff CONT</code>: See filesystem changes."
+                    },
+                    {
+                        text: "5. Resource Monitoring (L2)",
+                        detail: "<code>docker stats</code>: Real-time CPU/RAM/Net.<br><code>docker top CONT</code>: View processes inside.<br><code>docker events</code>: Track lifecycle events.<br><code>docker inspect --format</code>: Extract specific fields."
+                    },
+                    {
+                        text: "6. Volumes & Storage",
+                        detail: "<code>docker volume create/ls/rm</code>: Manage persistent storage.<br><code>docker volume inspect</code>: Verify mount paths.<br><code>docker volume prune</code>: Cleanup unused safely.<br><code>docker run -v</code> / <code>--mount</code>: Mount volume to container."
+                    },
+                    {
+                        text: "7. Networking",
+                        detail: "<code>docker network ls/create/rm</code>: Manage networks.<br><code>docker network inspect</code>: Debug connectivity.<br><code>docker network prune</code>: Cleanup unused.<br><code>docker run -p HOST:CONT</code>: Expose service externally."
+                    },
+                    {
+                        text: "8. Dockerfile & Build",
+                        detail: "<code>docker build -t name .</code>: Build image from Dockerfile.<br><code>docker build --no-cache</code>: Force clean build.<br><code>docker buildx build</code>: Multi-arch builds.<br><code>docker commit CONT</code>: Save running container as image."
+                    },
+                    {
+                        text: "9. Docker Compose",
+                        detail: "<code>docker-compose up -d</code>: Start stack in background.<br><code>docker-compose down</code>: Stop & remove cleanly.<br><code>docker-compose ps/logs</code>: Status and central logs.<br><code>docker-compose build</code>: Rebuild after changes."
+                    },
+                    {
+                        text: "10. System Cleanup (L3)",
+                        detail: "<code>docker system df</code>: Disk usage report.<br><code>docker system prune -a</code>: Aggressive cleanup of unused data.<br><code>docker container/image/builder prune</code>: Targeted cleanups."
+                    },
+                    {
+                        text: "11. Security & Runtime Control",
+                        detail: "<code>docker run --user</code>: Run as non-root.<br><code>docker run --read-only</code>: Improve security.<br><code>docker run --restart=always</code>: Auto-recover.<br><code>docker run --memory / --cpus</code>: Throttle resources and prevent OOM."
+                    },
+                    {
+                        text: "12-15. Advanced & Utilities",
+                        detail: "<code>docker wait/pause/unpause</code>: Execution control.<br><code>docker login/logout/search</code>: Registry auth.<br><code>docker node/service ls</code>: Swarm node control.<br><code>docker cp</code>: Transfer files host to container.<br><code>docker run --env-file</code>: Secure config injection."
+                    }
+                ],
+                warnings: ["This is a reference cheat sheet. Ensure you fully understand destructive commands like <code>prune -a</code> or <code>rm -f</code> before executing them in production environments."],
+                verification: "Use <code>docker help &lt;command&gt;</code> natively in the terminal for deep documentation on any of these flags.",
+                escalation: "If you need specific architectural RCA playbooks or Swarm/Kubernetes equivalents, please request the Kubernetes playbook guide."
             }
         ]
     }
