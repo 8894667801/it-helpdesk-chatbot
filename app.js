@@ -381,7 +381,8 @@
             health: ['slow', 'disk', 'cleanup', 'performance', 'speed', 'storage', 'health'],
             aws: ['aws', 'server', 'login', 'godaddy', 'jackson', 'lincoln', 'stage', 'uat', 'vpn', 'openvpn', 'prod', 'non-prod'],
             linux: ['linux', 'bash', 'chmod', 'chown', 'grep', 'awk', 'sed', 'systemctl', 'journalctl', 'crontab', 'apt', 'yum', 'dnf', 'tar', 'rsync', 'ubuntu', 'centos', 'redhat', 'fedora', 'debian', 'terminal', 'shell', 'nano', 'vim', 'ps aux', 'kill process', 'mount', 'unmount', 'df', 'du', 'ping', 'traceroute', 'nslookup', 'dig', 'scp', 'curl', 'wget', 'top', 'htop', 'mpstat', 'vmstat', 'sar', 'free', 'meminfo', 'lsblk', 'iostat', 'dstat', 'ip addr', 'ss', 'netstat', 'iftop', 'nload', 'tcpdump', 'dmesg', 'sensors', 'hostnamectl'],
-            docker: ['docker', 'docker-compose', 'container', 'image', 'pull', 'run', 'ps', 'exec', 'logs', 'volume', 'Dockerfile', 'build', 'yaml', 'cgroups', 'oom', 'oomkilled', 'l1', 'l2', 'l3', 'engine', 'cache', 'compose', 'prune']
+            docker: ['docker', 'docker-compose', 'container', 'image', 'pull', 'run', 'ps', 'exec', 'logs', 'volume', 'Dockerfile', 'build', 'yaml', 'cgroups', 'oom', 'oomkilled', 'l1', 'l2', 'l3', 'engine', 'cache', 'compose', 'prune'],
+            commands: ['100', 'commands', 'cheat sheet', 'reference', 'cmd', 'directory']
         };
 
         for (const [catId, keywords] of Object.entries(categoryKeywords)) {

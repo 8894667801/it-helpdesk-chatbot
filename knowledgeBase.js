@@ -2138,7 +2138,16 @@ const KNOWLEDGE_BASE = {
                 warnings: ["Treat Docker containers as process-level isolation, not hypervisor-level virtualization. A shared kernel means sophisticated exploits can still traverse containers."],
                 verification: "Run automated container vulnerability scanners (like Trivy or Clair) inside the CI/CD pipeline to catch high-severity CVEs before production deploy.",
                 escalation: "If a security breach is suspected (crypto miner found via `top`), immediately isolate the container via network rules, capture a memory dump for forensics, and then terminate it."
-            },
+            }
+        ]
+    },
+
+    commands: {
+        id: "commands",
+        title: "100 Cmds & Cheat Sheets",
+        icon: "📚",
+        description: "Comprehensive command lists for various technologies",
+        issues: [
             {
                 id: "docker-100-commands",
                 title: "Top 100 Most-Used Docker Commands",
