@@ -382,7 +382,9 @@
             aws: ['aws', 'server', 'login', 'godaddy', 'jackson', 'lincoln', 'stage', 'uat', 'vpn', 'openvpn', 'prod', 'non-prod'],
             linux: ['linux', 'bash', 'chmod', 'chown', 'grep', 'awk', 'sed', 'systemctl', 'journalctl', 'crontab', 'apt', 'yum', 'dnf', 'tar', 'rsync', 'ubuntu', 'centos', 'redhat', 'fedora', 'debian', 'terminal', 'shell', 'nano', 'vim', 'ps aux', 'kill process', 'mount', 'unmount', 'df', 'du', 'ping', 'traceroute', 'nslookup', 'dig', 'scp', 'curl', 'wget', 'top', 'htop', 'mpstat', 'vmstat', 'sar', 'free', 'meminfo', 'lsblk', 'iostat', 'dstat', 'ip addr', 'ss', 'netstat', 'iftop', 'nload', 'tcpdump', 'dmesg', 'sensors', 'hostnamectl'],
             docker: ['docker', 'docker-compose', 'container', 'image', 'pull', 'run', 'ps', 'exec', 'logs', 'volume', 'Dockerfile', 'build', 'yaml', 'cgroups', 'oom', 'oomkilled', 'l1', 'l2', 'l3', 'engine', 'cache', 'compose', 'prune'],
-            commands: ['100', 'commands', 'cheat sheet', 'reference', 'cmd', 'directory']
+            commands: ['100', 'commands', 'cheat sheet', 'reference', 'cmd', 'directory'],
+            ms102: ['ms-102', 'ms102', 'endpoint administrator', 'autopilot', 'intune', 'device enrollment', 'compliance policy', 'configuration profile', 'update rings', 'bitlocker', 'endpoint analytics', 'windows 365', 'cloud pc', 'win32 app'],
+            sc900: ['sc-900', 'sc900', 'security compliance identity', 'zero trust', 'entra id', 'azure ad', 'conditional access', 'defender for cloud', 'sentinel', 'purview', 'dlp', 'ediscovery', 'insider risk', 'compliance score', 'service trust', 'shared responsibility']
         };
 
         for (const [catId, keywords] of Object.entries(categoryKeywords)) {

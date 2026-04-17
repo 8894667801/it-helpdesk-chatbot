@@ -2208,5 +2208,643 @@ const KNOWLEDGE_BASE = {
                 escalation: "If you need specific architectural RCA playbooks or Swarm/Kubernetes equivalents, please request the Kubernetes playbook guide."
             }
         ]
+    },
+
+    ms102: {
+        id: "ms102",
+        title: "MS-102 Study Guide",
+        icon: "📘",
+        description: "Microsoft 365 Endpoint Administrator exam preparation",
+        issues: [
+            {
+                id: "ms102-topic-1",
+                title: "Deploy & Manage Windows Client — Autopilot",
+                keywords: ["autopilot", "windows deployment", "oobe", "enrollment", "zero touch", "ms-102", "ms102"],
+                symptoms: "<strong>Exam Domain:</strong> Deploy Windows client<br><strong>Weight:</strong> ~25-30% of exam",
+                steps: [
+                    {
+                        text: "Windows Autopilot Overview",
+                        detail: "Autopilot enables <strong>zero-touch deployment</strong> of Windows devices. Devices are pre-registered with their hardware hash in Intune. On first boot (OOBE), the device auto-enrolls, applies policies, and installs apps — no imaging required."
+                    },
+                    {
+                        text: "Deployment Profiles",
+                        detail: "<strong>User-Driven Mode:</strong> User signs in during OOBE → device joins Azure AD → policies apply.<br><strong>Self-Deploying Mode:</strong> No user interaction — ideal for kiosks/shared devices (requires TPM 2.0).<br><strong>Pre-Provisioned (White Glove):</strong> IT pre-configures device before handing to user."
+                    },
+                    {
+                        text: "Hardware Hash Registration",
+                        detail: "Collect hardware hashes via PowerShell: <code>Get-WindowsAutopilotInfo.ps1 -OutputFile C:\\hash.csv</code>. Upload CSV to Intune > Devices > Windows enrollment > Devices. Assign an Autopilot deployment profile."
+                    },
+                    {
+                        text: "Enrollment Status Page (ESP)",
+                        detail: "ESP shows deployment progress to users during OOBE. Configure in Intune > Devices > Enrollment > Enrollment Status Page. Set <strong>blocking apps</strong> that must install before user can access desktop."
+                    },
+                    {
+                        text: "Autopilot Reset",
+                        detail: "Remote wipe that preserves Azure AD join and Intune enrollment. Triggered from Intune portal. Device returns to OOBE with policies reapplied — useful for reassigning devices between users."
+                    }
+                ],
+                warnings: ["Key exam topic: Know the differences between User-Driven, Self-Deploying, and Pre-Provisioned modes."],
+                verification: "<strong>Study Check:</strong> Can you explain when to use each Autopilot mode and what prerequisites each requires (e.g., TPM 2.0 for Self-Deploying)?",
+                escalation: "Review Microsoft Learn: Plan and implement Windows Autopilot"
+            },
+            {
+                id: "ms102-topic-2",
+                title: "Manage Device Enrollment in Intune",
+                keywords: ["intune enrollment", "mdm", "mam", "device management", "byod", "corporate devices"],
+                symptoms: "<strong>Exam Domain:</strong> Manage device enrollment<br><strong>Weight:</strong> Part of endpoint management (~25-30%)",
+                steps: [
+                    {
+                        text: "MDM vs MAM",
+                        detail: "<strong>MDM (Mobile Device Management):</strong> Full device control — wipe, lock, enforce policies. Device is enrolled.<br><strong>MAM (Mobile App Management):</strong> Manage apps only without enrolling the device — ideal for BYOD. Uses App Protection Policies."
+                    },
+                    {
+                        text: "Enrollment Methods — Windows",
+                        detail: "<strong>Automatic enrollment:</strong> Configure via Azure AD > Mobility (MDM/MAM) > Set MDM scope to All/Some.<br><strong>Bulk enrollment:</strong> Use Windows Configuration Designer to create provisioning packages.<br><strong>GPO enrollment:</strong> For hybrid-joined devices via Group Policy."
+                    },
+                    {
+                        text: "Enrollment Methods — iOS/Android",
+                        detail: "<strong>iOS:</strong> Apple Business Manager (ABM) + DEP for corporate. Company Portal app for BYOD.<br><strong>Android:</strong> Android Enterprise — Work Profile (BYOD), Fully Managed (corporate), Dedicated (kiosk)."
+                    },
+                    {
+                        text: "Enrollment Restrictions",
+                        detail: "Configure in Intune > Devices > Enrollment restrictions. Control: device type (iOS, Android, Windows), OS version limits, personal vs corporate, max devices per user."
+                    },
+                    {
+                        text: "Device Categories & Groups",
+                        detail: "Create device categories (e.g., 'Sales', 'Engineering'). Users select category during enrollment. Use dynamic Azure AD groups with rules like <code>(device.deviceCategory -eq 'Sales')</code> for targeted policy assignment."
+                    }
+                ],
+                warnings: ["Know the difference between Azure AD Join vs Hybrid Azure AD Join vs Azure AD Registered — this is heavily tested."],
+                verification: "<strong>Study Check:</strong> Can you list the enrollment methods for each platform and explain MDM scope configuration?",
+                escalation: "Review Microsoft Learn: Set up enrollment for Windows/iOS/Android devices"
+            },
+            {
+                id: "ms102-topic-3",
+                title: "Configure Device Compliance Policies",
+                keywords: ["compliance policy", "conditional access", "device compliance", "non-compliant", "grace period"],
+                symptoms: "<strong>Exam Domain:</strong> Manage device compliance<br><strong>Weight:</strong> Part of security management (~20-25%)",
+                steps: [
+                    {
+                        text: "Compliance Policy Basics",
+                        detail: "Compliance policies define <strong>minimum requirements</strong> a device must meet: OS version, encryption (BitLocker), password complexity, firewall enabled, Defender status, jailbreak detection."
+                    },
+                    {
+                        text: "Actions for Non-Compliance",
+                        detail: "<strong>Mark as non-compliant:</strong> Immediately or after a grace period.<br><strong>Send email notification:</strong> Alert user to fix issues.<br><strong>Remotely lock device.</strong><br><strong>Retire device:</strong> Remove corporate data after extended non-compliance."
+                    },
+                    {
+                        text: "Compliance + Conditional Access",
+                        detail: "Conditional Access policies can <strong>require device compliance</strong> as a grant control. Flow: User signs in → Azure AD checks Conditional Access → if policy requires compliant device → Intune compliance status checked → Access granted or blocked."
+                    },
+                    {
+                        text: "Compliance Policy Settings — Windows",
+                        detail: "Key settings: <strong>BitLocker required</strong>, Secure Boot enabled, minimum OS version, Windows Defender Antimalware required, Defender real-time protection ON, max minutes of inactivity before lock."
+                    },
+                    {
+                        text: "Device Compliance Dashboard",
+                        detail: "Monitor via Intune > Devices > Compliance. View: compliant vs non-compliant counts, devices without policy, per-setting compliance breakdown."
+                    }
+                ],
+                warnings: ["Critical exam concept: Compliance policies alone don't block access — they only MARK devices. You need Conditional Access to ENFORCE."],
+                verification: "<strong>Study Check:</strong> Can you explain the flow from compliance policy evaluation to Conditional Access enforcement?",
+                escalation: "Review Microsoft Learn: Create a compliance policy in Intune"
+            },
+            {
+                id: "ms102-topic-4",
+                title: "Manage Device Configuration Profiles",
+                keywords: ["configuration profile", "device restriction", "settings catalog", "administrative templates", "endpoint manager"],
+                symptoms: "<strong>Exam Domain:</strong> Configure device profiles<br><strong>Weight:</strong> Part of endpoint management (~25-30%)",
+                steps: [
+                    {
+                        text: "Profile Types",
+                        detail: "<strong>Device restrictions:</strong> Camera, Bluetooth, screen capture, app store.<br><strong>Wi-Fi/VPN/Email:</strong> Push corporate network and mail settings.<br><strong>Settings Catalog:</strong> Granular individual settings (thousands available).<br><strong>Administrative Templates (ADMX):</strong> GPO-equivalent settings in Intune."
+                    },
+                    {
+                        text: "Settings Catalog vs Admin Templates",
+                        detail: "<strong>Settings Catalog:</strong> Newer, flat list, supports all platforms, individual setting search. Microsoft's recommended approach.<br><strong>Admin Templates:</strong> ADMX-based, Windows-only, familiar GPO structure. Being phased in favor of Settings Catalog."
+                    },
+                    {
+                        text: "Profile Assignment",
+                        detail: "Assign profiles to <strong>User groups</strong> (follow user to any device) or <strong>Device groups</strong> (apply to device regardless of user). Use <strong>Filters</strong> to narrow scope (e.g., only Windows 11 devices)."
+                    },
+                    {
+                        text: "Conflict Resolution",
+                        detail: "When multiple profiles set the same setting: <strong>Most restrictive wins</strong> for security settings. For conflicts, check Intune > Devices > Configuration > select device > Device configuration status to see per-setting conflict details."
+                    },
+                    {
+                        text: "Custom Profiles (OMA-URI)",
+                        detail: "For settings not in the UI, use Custom profiles with OMA-URI paths. Example: <code>./Device/Vendor/MSFT/Policy/Config/...</code>. Use OMA-URI reference docs to find the correct path and data type."
+                    }
+                ],
+                warnings: ["Know when to use Settings Catalog vs Administrative Templates vs Custom OMA-URI — this is a common exam question."],
+                verification: "<strong>Study Check:</strong> Can you describe the difference between user-scoped and device-scoped profile assignments?",
+                escalation: "Review Microsoft Learn: Create device configuration profiles in Intune"
+            },
+            {
+                id: "ms102-topic-5",
+                title: "Manage Application Deployment",
+                keywords: ["app deployment", "win32 app", "lob", "microsoft store", "app protection policy", "intune apps"],
+                symptoms: "<strong>Exam Domain:</strong> Manage applications<br><strong>Weight:</strong> Part of app management (~15-20%)",
+                steps: [
+                    {
+                        text: "App Types in Intune",
+                        detail: "<strong>Microsoft Store apps:</strong> Direct from store, auto-update.<br><strong>Microsoft 365 Apps:</strong> Deploy Office suite with configuration.<br><strong>Win32 apps:</strong> Traditional .exe/.msi wrapped with IntuneWinAppUtil.exe.<br><strong>LOB (Line of Business):</strong> .msi, .appx, .ipa, .apk files.<br><strong>Web links:</strong> Shortcuts to web apps."
+                    },
+                    {
+                        text: "Win32 App Packaging",
+                        detail: "Steps: 1) Download <code>IntuneWinAppUtil.exe</code>. 2) Run: <code>IntuneWinAppUtil -c SourceFolder -s setup.exe -o OutputFolder</code>. 3) Upload .intunewin file to Intune. 4) Set install/uninstall commands, detection rules, and requirements."
+                    },
+                    {
+                        text: "Detection Rules",
+                        detail: "How Intune verifies an app is installed: <strong>MSI product code</strong> (automatic for .msi), <strong>File/folder exists</strong> (path + version check), <strong>Registry key</strong> exists/value matches, <strong>Custom script</strong> (PowerShell returning exit 0 = detected)."
+                    },
+                    {
+                        text: "Assignment Types",
+                        detail: "<strong>Required:</strong> Auto-installs on assigned devices/users.<br><strong>Available:</strong> Shows in Company Portal — user chooses to install.<br><strong>Uninstall:</strong> Removes app from assigned targets."
+                    },
+                    {
+                        text: "App Protection Policies (APP)",
+                        detail: "Control data flow without enrolling device (MAM). Settings: prevent copy/paste to personal apps, require PIN to open managed app, encrypt app data, block screenshots, require minimum OS version."
+                    }
+                ],
+                warnings: ["Win32 app deployment with detection rules is heavily tested. Practice the packaging and deployment workflow."],
+                verification: "<strong>Study Check:</strong> Can you walk through the full Win32 app deployment process from packaging to detection rules?",
+                escalation: "Review Microsoft Learn: Add and assign apps with Intune"
+            },
+            {
+                id: "ms102-topic-6",
+                title: "Plan & Implement Windows Updates",
+                keywords: ["windows update", "update rings", "wufb", "feature update", "quality update", "driver update"],
+                symptoms: "<strong>Exam Domain:</strong> Manage updates<br><strong>Weight:</strong> Part of endpoint management (~25-30%)",
+                steps: [
+                    {
+                        text: "Update Types",
+                        detail: "<strong>Quality updates:</strong> Monthly security/bug fixes (Patch Tuesday).<br><strong>Feature updates:</strong> Annual OS upgrades (e.g., 22H2 → 23H2).<br><strong>Driver updates:</strong> Hardware driver updates from Windows Update.<br><strong>Definition updates:</strong> Defender antimalware signatures."
+                    },
+                    {
+                        text: "Windows Update for Business (WUfB)",
+                        detail: "Cloud-managed update solution — no WSUS/SCCM needed. Configure via Intune <strong>Update Rings</strong>. Set deferral periods, deadlines, and active hours. Devices pull updates directly from Windows Update."
+                    },
+                    {
+                        text: "Update Rings Configuration",
+                        detail: "Key settings: <strong>Quality update deferral:</strong> 0-30 days. <strong>Feature update deferral:</strong> 0-365 days. <strong>Auto restart before deadline:</strong> 2-30 days. <strong>Deadline:</strong> Force install after X days. <strong>Active hours:</strong> Prevent restarts during work time."
+                    },
+                    {
+                        text: "Feature Update Policies",
+                        detail: "Separate from Update Rings. Use to <strong>pin devices to a specific Windows version</strong> (e.g., keep all devices on Windows 11 23H2). Prevents unwanted upgrades while still receiving quality updates."
+                    },
+                    {
+                        text: "Windows Update Reports",
+                        detail: "Monitor via Intune > Reports > Windows updates. View: update compliance status, devices pending restart, failed updates, update rings assignment status."
+                    }
+                ],
+                warnings: ["Know the difference between Update Rings (deferral/deadline) and Feature Update policies (version pinning)."],
+                verification: "<strong>Study Check:</strong> Can you configure an Update Ring that defers quality updates 7 days and feature updates 30 days with a 5-day deadline?",
+                escalation: "Review Microsoft Learn: Manage Windows updates with Intune"
+            },
+            {
+                id: "ms102-topic-7",
+                title: "Implement Endpoint Security — BitLocker & Defender",
+                keywords: ["bitlocker", "defender for endpoint", "endpoint security", "encryption", "antivirus", "asr"],
+                symptoms: "<strong>Exam Domain:</strong> Plan and implement endpoint security<br><strong>Weight:</strong> ~20-25% of exam",
+                steps: [
+                    {
+                        text: "BitLocker via Intune",
+                        detail: "Configure in Endpoint Security > Disk encryption. Key settings: <strong>Require encryption</strong>, encrypt used space only (faster) or full disk, recovery key rotation, escrow recovery key to Azure AD."
+                    },
+                    {
+                        text: "BitLocker Recovery Keys",
+                        detail: "Recovery keys are stored in Azure AD. View in: Azure AD > Devices > select device > BitLocker keys. Users can self-service recover at <code>aka.ms/myrecoverykey</code>. Exam tip: Know the key rotation policy."
+                    },
+                    {
+                        text: "Microsoft Defender for Endpoint",
+                        detail: "EDR (Endpoint Detection & Response) platform. Capabilities: threat detection, automated investigation & remediation, threat analytics, device risk scoring. Integrates with Intune for <strong>risk-based Conditional Access</strong>."
+                    },
+                    {
+                        text: "Attack Surface Reduction (ASR) Rules",
+                        detail: "Pre-defined rules to block common attack vectors: block Office macros from creating child processes, block credential stealing from LSASS, block executable content from email, block persistence through WMI. Configure in Endpoint Security > ASR."
+                    },
+                    {
+                        text: "Defender Antivirus Policies",
+                        detail: "Managed via Endpoint Security > Antivirus. Settings: real-time protection, cloud-delivered protection, sample submission, scan schedule, exclusions for known line-of-business apps."
+                    }
+                ],
+                warnings: ["Risk-based Conditional Access combining Defender risk levels + Intune compliance is a key exam scenario."],
+                verification: "<strong>Study Check:</strong> Can you explain how Defender for Endpoint risk levels integrate with Conditional Access to block risky devices?",
+                escalation: "Review Microsoft Learn: Manage endpoint security in Intune"
+            },
+            {
+                id: "ms102-topic-8",
+                title: "Conditional Access & Identity Protection",
+                keywords: ["conditional access", "mfa", "identity protection", "sign-in risk", "user risk", "azure ad"],
+                symptoms: "<strong>Exam Domain:</strong> Manage identity and access<br><strong>Weight:</strong> ~15-20% of exam",
+                steps: [
+                    {
+                        text: "Conditional Access Components",
+                        detail: "<strong>Assignments (IF):</strong> Users/groups, cloud apps, conditions (location, device platform, sign-in risk, client app).<br><strong>Access Controls (THEN):</strong> Block access, Grant access (require MFA, compliant device, hybrid join, app protection policy, password change)."
+                    },
+                    {
+                        text: "Common Policies",
+                        detail: "1) Require MFA for all users. 2) Require compliant device for Office 365. 3) Block legacy authentication. 4) Require MFA for Azure management. 5) Block access from untrusted locations."
+                    },
+                    {
+                        text: "Named Locations",
+                        detail: "Define trusted IP ranges or countries. Use in Conditional Access conditions to: exclude corporate IPs from MFA, block sign-ins from specific countries, create location-based policies."
+                    },
+                    {
+                        text: "Identity Protection Policies",
+                        detail: "<strong>Sign-in risk policy:</strong> Detects risky sign-in patterns (anonymous IP, atypical travel, malware-linked IP). Actions: require MFA or block.<br><strong>User risk policy:</strong> Detects compromised accounts (leaked credentials). Actions: require password change or block."
+                    },
+                    {
+                        text: "Report-Only Mode",
+                        detail: "Test Conditional Access policies without enforcing them. Enable 'Report-only' toggle. View results in Sign-in logs > Conditional Access tab. <strong>Always test in Report-Only before enabling!</strong>"
+                    }
+                ],
+                warnings: ["Conditional Access policy evaluation order: policies are AND-combined (all applicable policies must be satisfied). This is a common exam trick."],
+                verification: "<strong>Study Check:</strong> Can you design a Conditional Access policy that requires MFA + compliant device for Office 365, excluding corporate locations?",
+                escalation: "Review Microsoft Learn: Plan and design Conditional Access policies"
+            },
+            {
+                id: "ms102-topic-9",
+                title: "Endpoint Analytics & Monitoring",
+                keywords: ["endpoint analytics", "proactive remediation", "device health", "startup performance", "log analytics"],
+                symptoms: "<strong>Exam Domain:</strong> Monitor devices<br><strong>Weight:</strong> Part of management and monitoring (~10-15%)",
+                steps: [
+                    {
+                        text: "Endpoint Analytics Overview",
+                        detail: "Cloud-based analytics service that measures device performance and user experience. Provides scores for: <strong>Startup performance</strong> (boot time), <strong>Application reliability</strong> (crash rates), <strong>Recommended software</strong> (update compliance)."
+                    },
+                    {
+                        text: "Startup Performance Score",
+                        detail: "Measures: device boot time, time to desktop, time to responsive desktop. Broken down by: hardware model, OS version, drivers. Helps identify slow devices needing hardware refresh or optimization."
+                    },
+                    {
+                        text: "Proactive Remediations",
+                        detail: "PowerShell script packages that <strong>detect and fix issues automatically</strong>. Two scripts: Detection script (checks for issue, exit 1 = issue found) + Remediation script (fixes the issue). Runs on a schedule. Examples: clear temp files, reset browser cache, fix registry."
+                    },
+                    {
+                        text: "Intune Reporting",
+                        detail: "Key reports: Device compliance, Configuration profile status, App install status, Windows update status, Feature update status. Export to CSV or use Log Analytics for advanced queries."
+                    },
+                    {
+                        text: "Log Analytics Integration",
+                        detail: "Send Intune diagnostic data to Azure Log Analytics. Use KQL (Kusto Query Language) to create custom queries and dashboards. Example: query devices with high restart counts or app crash patterns."
+                    }
+                ],
+                warnings: ["Proactive Remediations require Windows 10/11 Enterprise or Education licenses + Intune."],
+                verification: "<strong>Study Check:</strong> Can you write a basic proactive remediation detection script that checks if temp files exceed 1GB?",
+                escalation: "Review Microsoft Learn: Endpoint analytics in Microsoft Intune"
+            },
+            {
+                id: "ms102-topic-10",
+                title: "Windows 365 & Azure Virtual Desktop",
+                keywords: ["windows 365", "cloud pc", "avd", "azure virtual desktop", "provisioning policy", "virtual desktop"],
+                symptoms: "<strong>Exam Domain:</strong> Plan and implement cloud-managed endpoints<br><strong>Weight:</strong> ~5-10% of exam",
+                steps: [
+                    {
+                        text: "Windows 365 vs AVD",
+                        detail: "<strong>Windows 365 (Cloud PC):</strong> Per-user fixed pricing, simple provisioning, managed by Microsoft, 1:1 dedicated VM per user.<br><strong>Azure Virtual Desktop (AVD):</strong> Consumption-based pricing, multi-session Windows 10/11, more customizable, requires Azure infrastructure knowledge."
+                    },
+                    {
+                        text: "Windows 365 Provisioning",
+                        detail: "Steps: 1) Assign Windows 365 license to user. 2) Create provisioning policy (Azure network connection, image, language). 3) Cloud PC auto-provisions. Users access via <code>windows365.microsoft.com</code> or Windows App."
+                    },
+                    {
+                        text: "Cloud PC Management",
+                        detail: "Managed just like physical devices in Intune: compliance policies, configuration profiles, app deployment, Windows updates all apply. Supports Autopilot-like setup experience."
+                    },
+                    {
+                        text: "Azure Network Connection",
+                        detail: "Connects Cloud PC to your corporate network. Two types: <strong>Microsoft Hosted Network</strong> (simple, no Azure sub needed) or <strong>Azure Network Connection</strong> (connect to existing VNet for on-prem resources)."
+                    },
+                    {
+                        text: "Cloud PC Resize & Restore",
+                        detail: "<strong>Resize:</strong> Change CPU/RAM/Storage by changing license assignment (e.g., 2vCPU/4GB → 4vCPU/16GB).<br><strong>Restore:</strong> Point-in-time restore from automatic snapshots taken every 12 hours (retained 10 days)."
+                    }
+                ],
+                warnings: ["Know when to recommend Windows 365 vs AVD — this is a scenario-based exam question."],
+                verification: "<strong>Study Check:</strong> Can you explain the provisioning flow for a Windows 365 Cloud PC and how it's managed in Intune?",
+                escalation: "Review Microsoft Learn: Windows 365 overview and planning"
+            }
+        ]
+    },
+
+    sc900: {
+        id: "sc900",
+        title: "SC-900 Study Guide",
+        icon: "🛡️",
+        description: "Security, Compliance & Identity Fundamentals exam preparation",
+        issues: [
+            {
+                id: "sc900-topic-1",
+                title: "Security, Compliance & Identity Concepts",
+                keywords: ["security concepts", "zero trust", "shared responsibility", "defense in depth", "sc-900", "sc900"],
+                symptoms: "<strong>Exam Domain:</strong> Describe the concepts of security, compliance, and identity<br><strong>Weight:</strong> ~10-15% of exam",
+                steps: [
+                    {
+                        text: "Shared Responsibility Model",
+                        detail: "<strong>On-Premises:</strong> Customer manages everything.<br><strong>IaaS:</strong> Provider manages physical infra; customer manages OS, apps, data.<br><strong>PaaS:</strong> Provider manages OS + infra; customer manages apps + data.<br><strong>SaaS:</strong> Provider manages almost everything; customer manages data + access."
+                    },
+                    {
+                        text: "Defense in Depth",
+                        detail: "Layered security approach (like an onion): <strong>Physical</strong> → <strong>Identity & Access</strong> → <strong>Perimeter</strong> → <strong>Network</strong> → <strong>Compute</strong> → <strong>Application</strong> → <strong>Data</strong>. Each layer provides protection if another is breached."
+                    },
+                    {
+                        text: "Zero Trust Model",
+                        detail: "Principles: <strong>1) Verify explicitly</strong> — always authenticate and authorize. <strong>2) Least privilege access</strong> — limit user access with JIT/JEA. <strong>3) Assume breach</strong> — minimize blast radius, segment access, verify end-to-end encryption."
+                    },
+                    {
+                        text: "CIA Triad",
+                        detail: "<strong>Confidentiality:</strong> Restrict access to authorized users only (encryption, access controls).<br><strong>Integrity:</strong> Ensure data hasn't been tampered with (hashing, digital signatures).<br><strong>Availability:</strong> Ensure systems are accessible when needed (redundancy, DDoS protection)."
+                    },
+                    {
+                        text: "Common Threats",
+                        detail: "<strong>Phishing:</strong> Fake emails to steal credentials.<br><strong>Ransomware:</strong> Encrypts data for ransom.<br><strong>DDoS:</strong> Overwhelms services with traffic.<br><strong>Insider threat:</strong> Malicious or negligent employees.<br><strong>Supply chain attack:</strong> Compromise via third-party software."
+                    }
+                ],
+                warnings: ["Zero Trust principles are heavily tested — memorize all three principles and be able to apply them in scenarios."],
+                verification: "<strong>Study Check:</strong> Can you explain how Zero Trust differs from traditional perimeter-based security?",
+                escalation: "Review Microsoft Learn: Describe security and compliance concepts"
+            },
+            {
+                id: "sc900-topic-2",
+                title: "Azure AD / Microsoft Entra ID — Identity Basics",
+                keywords: ["azure ad", "entra id", "identity", "authentication", "tenant", "directory"],
+                symptoms: "<strong>Exam Domain:</strong> Describe the capabilities of Microsoft Entra<br><strong>Weight:</strong> ~25-30% of exam",
+                steps: [
+                    {
+                        text: "What is Microsoft Entra ID (Azure AD)?",
+                        detail: "Cloud-based <strong>identity and access management</strong> service. It's the backbone of Microsoft 365, Azure, and thousands of SaaS apps. Every M365 tenant has an Entra ID directory. It handles authentication, authorization, and SSO."
+                    },
+                    {
+                        text: "Identity Types",
+                        detail: "<strong>User identities:</strong> Internal employees (cloud or synced from on-prem AD).<br><strong>Guest identities (B2B):</strong> External users invited to collaborate.<br><strong>Service principals:</strong> Identity for applications/services.<br><strong>Managed identities:</strong> Auto-managed identity for Azure resources (no credential management)."
+                    },
+                    {
+                        text: "Hybrid Identity",
+                        detail: "<strong>Azure AD Connect / Cloud Sync:</strong> Synchronizes on-prem AD users to Azure AD. Enables: single identity across cloud and on-prem, password hash sync, pass-through authentication, or federation (ADFS)."
+                    },
+                    {
+                        text: "Authentication Methods",
+                        detail: "<strong>Passwords:</strong> Traditional (weakest). <strong>MFA:</strong> Password + second factor (phone, authenticator app, FIDO2 key). <strong>Passwordless:</strong> Windows Hello for Business, FIDO2 security keys, Microsoft Authenticator phone sign-in."
+                    },
+                    {
+                        text: "Self-Service Password Reset (SSPR)",
+                        detail: "Allows users to reset their own passwords without helpdesk. Configure: authentication methods required (email, phone, security questions, authenticator app). Requires Azure AD Premium P1 license."
+                    }
+                ],
+                warnings: ["Know all authentication methods and when to recommend each. Passwordless is Microsoft's recommended approach."],
+                verification: "<strong>Study Check:</strong> Can you list the different identity types in Entra ID and explain managed identities?",
+                escalation: "Review Microsoft Learn: Describe Microsoft Entra ID"
+            },
+            {
+                id: "sc900-topic-3",
+                title: "Access Management — Conditional Access & RBAC",
+                keywords: ["conditional access sc900", "rbac", "role based access", "pim", "privileged identity"],
+                symptoms: "<strong>Exam Domain:</strong> Describe access management capabilities<br><strong>Weight:</strong> Part of identity (~25-30%)",
+                steps: [
+                    {
+                        text: "Conditional Access Overview",
+                        detail: "IF/THEN policies that control access. <strong>Signals (IF):</strong> User, location, device, app, risk level. <strong>Decisions (THEN):</strong> Allow, block, require MFA, require compliant device. Think of it as 'the new perimeter' in Zero Trust."
+                    },
+                    {
+                        text: "Role-Based Access Control (Azure RBAC)",
+                        detail: "Controls who can do what on Azure resources. Three elements: <strong>Security principal</strong> (who), <strong>Role definition</strong> (what they can do), <strong>Scope</strong> (where — management group > subscription > resource group > resource). Built-in roles: Owner, Contributor, Reader."
+                    },
+                    {
+                        text: "Azure AD Roles vs Azure RBAC",
+                        detail: "<strong>Azure AD roles:</strong> Manage Azure AD resources (users, groups, apps). Examples: Global Admin, User Admin, Security Admin.<br><strong>Azure RBAC roles:</strong> Manage Azure resources (VMs, storage, networks). Examples: Owner, Contributor, Reader."
+                    },
+                    {
+                        text: "Privileged Identity Management (PIM)",
+                        detail: "Just-In-Time (JIT) privileged access. Users request activation of eligible roles → approval workflow → time-limited access. Reduces the window of exposure for powerful roles like Global Admin. Requires Azure AD Premium P2."
+                    },
+                    {
+                        text: "Identity Governance",
+                        detail: "<strong>Access Reviews:</strong> Periodic review of who has access to what.<br><strong>Entitlement Management:</strong> Access packages for bundled permissions.<br><strong>Lifecycle Workflows:</strong> Automate joiner/mover/leaver processes."
+                    }
+                ],
+                warnings: ["Key distinction: Azure AD roles manage the DIRECTORY, Azure RBAC roles manage Azure RESOURCES. This is a common exam trap."],
+                verification: "<strong>Study Check:</strong> Can you explain how PIM provides just-in-time access and why it improves security?",
+                escalation: "Review Microsoft Learn: Describe access management capabilities of Azure AD"
+            },
+            {
+                id: "sc900-topic-4",
+                title: "Azure Security Solutions — Defender for Cloud & Sentinel",
+                keywords: ["defender for cloud", "sentinel", "siem", "soar", "azure security", "security center"],
+                symptoms: "<strong>Exam Domain:</strong> Describe the capabilities of Microsoft security solutions<br><strong>Weight:</strong> ~30-35% of exam",
+                steps: [
+                    {
+                        text: "Microsoft Defender for Cloud",
+                        detail: "Cloud Security Posture Management (CSPM) + Cloud Workload Protection (CWP). Provides: <strong>Secure Score</strong> (security posture rating), security recommendations, threat protection for VMs/SQL/Storage/Containers/App Service. Works across Azure, AWS, and GCP."
+                    },
+                    {
+                        text: "Secure Score",
+                        detail: "Percentage-based score measuring your security posture. Higher = better. Each recommendation gives points when implemented. Examples: 'Enable MFA for admins' (+10 pts), 'Enable disk encryption' (+5 pts). View at portal.azure.com > Defender for Cloud."
+                    },
+                    {
+                        text: "Microsoft Sentinel",
+                        detail: "Cloud-native <strong>SIEM</strong> (Security Information & Event Management) + <strong>SOAR</strong> (Security Orchestration, Automation & Response). Collects data from all sources → Detects threats using analytics → Investigates with AI → Responds automatically with playbooks."
+                    },
+                    {
+                        text: "Sentinel Components",
+                        detail: "<strong>Data Connectors:</strong> Ingest data from M365, Azure, firewalls, third-party.<br><strong>Analytics Rules:</strong> Detect threats and create incidents.<br><strong>Workbooks:</strong> Visual dashboards for monitoring.<br><strong>Playbooks:</strong> Automated response using Logic Apps (e.g., auto-block IP, send Teams alert)."
+                    },
+                    {
+                        text: "Azure Network Security",
+                        detail: "<strong>NSG (Network Security Group):</strong> Firewall rules for subnets/NICs (allow/deny by IP, port, protocol).<br><strong>Azure Firewall:</strong> Managed firewall with threat intelligence.<br><strong>Azure DDoS Protection:</strong> Automatic DDoS mitigation.<br><strong>Azure Bastion:</strong> Secure RDP/SSH without exposing public IPs."
+                    }
+                ],
+                warnings: ["Know the difference between Defender for Cloud (posture + workload protection) and Sentinel (SIEM + SOAR). They complement each other."],
+                verification: "<strong>Study Check:</strong> Can you explain what SIEM and SOAR mean and how Sentinel implements both?",
+                escalation: "Review Microsoft Learn: Describe security capabilities of Azure"
+            },
+            {
+                id: "sc900-topic-5",
+                title: "Microsoft 365 Defender Suite",
+                keywords: ["microsoft 365 defender", "defender for office", "defender for identity", "defender for endpoint sc900", "xdr"],
+                symptoms: "<strong>Exam Domain:</strong> Describe threat protection with Microsoft 365 Defender<br><strong>Weight:</strong> Part of security solutions (~30-35%)",
+                steps: [
+                    {
+                        text: "Microsoft 365 Defender Overview",
+                        detail: "Unified <strong>XDR (Extended Detection & Response)</strong> platform that correlates signals across: email, endpoints, identity, and cloud apps. Single portal: <code>security.microsoft.com</code>. Automated investigation and response across the entire kill chain."
+                    },
+                    {
+                        text: "Defender for Office 365",
+                        detail: "Protects email and collaboration. <strong>Plan 1:</strong> Safe Attachments (sandbox detonation), Safe Links (URL rewriting), anti-phishing. <strong>Plan 2:</strong> Threat Explorer, automated investigation, attack simulation training."
+                    },
+                    {
+                        text: "Defender for Endpoint",
+                        detail: "Endpoint Detection & Response (EDR). Capabilities: threat & vulnerability management, attack surface reduction, next-gen antivirus, EDR, automated investigation, Microsoft Threat Experts. Generates <strong>device risk scores</strong> for Conditional Access."
+                    },
+                    {
+                        text: "Defender for Identity",
+                        detail: "Protects on-premises Active Directory. Detects: lateral movement (pass-the-hash, pass-the-ticket), reconnaissance, compromised credentials, malicious insiders. Sensors installed on domain controllers."
+                    },
+                    {
+                        text: "Defender for Cloud Apps (MCAS)",
+                        detail: "Cloud Access Security Broker (CASB). Capabilities: <strong>Shadow IT discovery</strong> (find unsanctioned apps), <strong>Session controls</strong> (block downloads from unmanaged devices), <strong>DLP for cloud apps</strong>, <strong>Anomaly detection</strong> (impossible travel, mass file download)."
+                    }
+                ],
+                warnings: ["Know which Defender product protects which domain: Office = email, Endpoint = devices, Identity = on-prem AD, Cloud Apps = SaaS apps."],
+                verification: "<strong>Study Check:</strong> Can you map each Defender product to its protection domain and list two key features of each?",
+                escalation: "Review Microsoft Learn: Describe Microsoft 365 Defender"
+            },
+            {
+                id: "sc900-topic-6",
+                title: "Microsoft Purview — Information Protection & DLP",
+                keywords: ["purview", "information protection", "sensitivity labels", "dlp", "data loss prevention", "classification"],
+                symptoms: "<strong>Exam Domain:</strong> Describe the capabilities of Microsoft compliance solutions<br><strong>Weight:</strong> ~25-30% of exam",
+                steps: [
+                    {
+                        text: "Microsoft Purview Overview",
+                        detail: "Unified data governance and compliance platform. Main areas: <strong>Information Protection</strong> (classify + protect data), <strong>Data Loss Prevention</strong> (prevent data leaks), <strong>Data Lifecycle Management</strong> (retain/delete), <strong>Compliance Manager</strong> (compliance posture)."
+                    },
+                    {
+                        text: "Sensitivity Labels",
+                        detail: "Classify and protect documents/emails. Apply: <strong>Encryption</strong> (restrict who can open), <strong>Content marking</strong> (headers, footers, watermarks), <strong>Access restrictions</strong>. Labels persist with the document wherever it travels. Can be applied manually, recommended, or automatically."
+                    },
+                    {
+                        text: "Sensitive Information Types (SIT)",
+                        detail: "Patterns that identify sensitive data: credit card numbers, SSNs, passport numbers, etc. Used by DLP policies and auto-labeling. Can create <strong>custom SITs</strong> with regex patterns, keyword lists, or exact data match (EDM)."
+                    },
+                    {
+                        text: "Data Loss Prevention (DLP)",
+                        detail: "Policies that detect and prevent sharing of sensitive data. Locations: Exchange, SharePoint, OneDrive, Teams, Endpoints (Windows devices). Actions: block sharing, notify user, require business justification, alert admin."
+                    },
+                    {
+                        text: "Trainable Classifiers",
+                        detail: "AI/ML models that learn to classify content. <strong>Pre-trained:</strong> Resumes, source code, harassment, threats. <strong>Custom:</strong> Train with your own sample data (minimum 50 positive samples). Used in DLP policies and auto-labeling."
+                    }
+                ],
+                warnings: ["Sensitivity labels vs Retention labels: Sensitivity = classify + protect (encryption/markings). Retention = how long to keep/when to delete. These are DIFFERENT."],
+                verification: "<strong>Study Check:</strong> Can you explain the difference between sensitivity labels and retention labels and when to use each?",
+                escalation: "Review Microsoft Learn: Describe information protection and data lifecycle management"
+            },
+            {
+                id: "sc900-topic-7",
+                title: "Compliance Management — Compliance Manager & Score",
+                keywords: ["compliance manager", "compliance score", "regulatory", "gdpr", "assessment", "improvement actions"],
+                symptoms: "<strong>Exam Domain:</strong> Describe compliance management capabilities<br><strong>Weight:</strong> Part of compliance (~25-30%)",
+                steps: [
+                    {
+                        text: "Compliance Manager Overview",
+                        detail: "Dashboard in Microsoft Purview that helps assess and manage compliance. Provides: <strong>Compliance Score</strong> (0-100%), pre-built assessments for regulations (GDPR, HIPAA, ISO 27001), and improvement action recommendations."
+                    },
+                    {
+                        text: "Compliance Score",
+                        detail: "Measures your compliance posture as a percentage. Points earned by completing <strong>improvement actions</strong>. Two categories: <strong>Microsoft-managed actions</strong> (what Microsoft does for you) + <strong>Customer-managed actions</strong> (what you need to do). Higher score ≠ guaranteed compliance."
+                    },
+                    {
+                        text: "Assessments & Templates",
+                        detail: "Pre-built templates for standards: <strong>Data Protection Baseline</strong> (default), GDPR, HIPAA, ISO 27001, NIST 800-53, SOC 2. Each assessment contains controls mapped to specific improvement actions."
+                    },
+                    {
+                        text: "Improvement Actions",
+                        detail: "Specific steps to improve compliance: 'Enable MFA', 'Configure DLP policies', 'Enable audit log'. Each action shows: points value, implementation status, test status, assigned owner. Some are auto-detected by Microsoft."
+                    },
+                    {
+                        text: "Compliance vs Security Score",
+                        detail: "<strong>Compliance Score:</strong> In Purview Compliance Manager — measures regulatory compliance posture.<br><strong>Secure Score:</strong> In Microsoft 365 Defender — measures security posture. Both give recommendations but for different domains."
+                    }
+                ],
+                warnings: ["Compliance Score does NOT guarantee you are compliant — it measures the progress of implementing recommended controls."],
+                verification: "<strong>Study Check:</strong> Can you explain how Compliance Score is calculated and the difference from Secure Score?",
+                escalation: "Review Microsoft Learn: Describe the compliance management capabilities in Microsoft Purview"
+            },
+            {
+                id: "sc900-topic-8",
+                title: "eDiscovery, Audit & Data Retention",
+                keywords: ["ediscovery", "audit log", "retention policy", "retention label", "legal hold", "data lifecycle"],
+                symptoms: "<strong>Exam Domain:</strong> Describe data lifecycle and records management<br><strong>Weight:</strong> Part of compliance (~25-30%)",
+                steps: [
+                    {
+                        text: "Data Retention Policies",
+                        detail: "Control how long to keep content. Apply to: Exchange, SharePoint, OneDrive, Teams, Yammer. Settings: <strong>Retain for X days/years</strong>, then delete or do nothing. <strong>Delete after X days</strong>. Content is preserved in hidden folders — users can still delete UI copies."
+                    },
+                    {
+                        text: "Retention Labels vs Policies",
+                        detail: "<strong>Retention policies:</strong> Applied at the container level (entire mailbox, entire site). Broad scope.<br><strong>Retention labels:</strong> Applied at the item level (specific email, document). More granular. Can trigger disposition review or declare records."
+                    },
+                    {
+                        text: "eDiscovery",
+                        detail: "Legal process to find, hold, and export content for litigation. <strong>Content Search:</strong> Basic search across M365. <strong>eDiscovery Standard:</strong> Cases + legal holds. <strong>eDiscovery Premium:</strong> Advanced analytics, review sets, machine learning, attorney-client privilege detection."
+                    },
+                    {
+                        text: "Audit Solutions",
+                        detail: "<strong>Audit Standard:</strong> 180-day retention. Thousands of audit events. Free with M365.<br><strong>Audit Premium:</strong> 1-year retention (extendable to 10 years), crucial event logging (MailItemsAccessed, SearchQueryInitiated), high-bandwidth API access."
+                    },
+                    {
+                        text: "Records Management",
+                        detail: "Label items as <strong>records</strong> (cannot be edited/deleted until retention expires). <strong>Regulatory records:</strong> Even more restrictive — label cannot be removed. Use file plan for structured classification. Disposition review before permanent deletion."
+                    }
+                ],
+                warnings: ["Know the eDiscovery tiers: Content Search vs Standard vs Premium and what each includes."],
+                verification: "<strong>Study Check:</strong> Can you explain the difference between retention policies (container-level) and retention labels (item-level)?",
+                escalation: "Review Microsoft Learn: Describe eDiscovery and audit capabilities"
+            },
+            {
+                id: "sc900-topic-9",
+                title: "Insider Risk & Communication Compliance",
+                keywords: ["insider risk", "communication compliance", "information barriers", "customer lockbox"],
+                symptoms: "<strong>Exam Domain:</strong> Describe insider risk capabilities<br><strong>Weight:</strong> Part of compliance (~25-30%)",
+                steps: [
+                    {
+                        text: "Insider Risk Management",
+                        detail: "Detects and responds to risky insider activities: data theft by departing employees, accidental data leaks, security policy violations, confidentiality violations. Uses templates: 'Data theft by departing users', 'Data leaks', 'Security policy violations'."
+                    },
+                    {
+                        text: "How Insider Risk Works",
+                        detail: "Flow: <strong>Triggering event</strong> (e.g., HR connector signals employee resignation) → <strong>Policy indicators</strong> analyzed (file downloads, USB copies, email attachments) → <strong>Risk score</strong> generated → <strong>Alert</strong> for investigation → <strong>Case</strong> creation for action."
+                    },
+                    {
+                        text: "Communication Compliance",
+                        detail: "Monitor emails, Teams messages, and third-party comms for: <strong>Regulatory compliance</strong> (financial communications), <strong>Code of conduct violations</strong> (harassment, threats), <strong>Sensitive information</strong>. Uses trainable classifiers + custom keyword policies."
+                    },
+                    {
+                        text: "Information Barriers",
+                        detail: "Prevent specific groups from communicating with each other. Example: Investment Banking team cannot chat/share with Trading team (Chinese wall). Applied to: Teams chats, SharePoint, OneDrive."
+                    },
+                    {
+                        text: "Customer Lockbox",
+                        detail: "Control over Microsoft engineer access to your data during support requests. If a Microsoft engineer needs to access your content: request is raised → <strong>your admin must approve</strong> → time-limited access → full audit trail. Ensures Zero Trust even for the cloud provider."
+                    }
+                ],
+                warnings: ["Insider Risk Management requires HR data connectors for departing employee scenarios — know this for the exam."],
+                verification: "<strong>Study Check:</strong> Can you explain the insider risk workflow from triggering event to case creation?",
+                escalation: "Review Microsoft Learn: Describe insider risk capabilities in Microsoft Purview"
+            },
+            {
+                id: "sc900-topic-10",
+                title: "Trust, Privacy & Microsoft Service Trust Portal",
+                keywords: ["service trust portal", "privacy", "trust center", "data residency", "microsoft priva"],
+                symptoms: "<strong>Exam Domain:</strong> Describe Microsoft's Service Trust Portal and privacy principles<br><strong>Weight:</strong> ~5-10% of exam",
+                steps: [
+                    {
+                        text: "Microsoft Service Trust Portal",
+                        detail: "Website: <code>servicetrust.microsoft.com</code>. Provides: audit reports (SOC, ISO, FedRAMP), compliance guides, penetration test results, data protection resources. Helps you verify Microsoft's own compliance for your auditors."
+                    },
+                    {
+                        text: "Microsoft Privacy Principles",
+                        detail: "Six principles: <strong>1) Control</strong> — you own your data. <strong>2) Transparency</strong> — clear data collection. <strong>3) Security</strong> — strong protection. <strong>4) Legal protections</strong> — respect local privacy laws. <strong>5) No content-based targeting</strong> — no ads from your data. <strong>6) Benefits to you</strong> — data use improves your experience."
+                    },
+                    {
+                        text: "Data Residency",
+                        detail: "Microsoft stores data in the region of your tenant's country. <strong>Multi-Geo:</strong> Premium feature to store data in additional regions. Core data types (Exchange, SharePoint, Teams) stored at rest in tenant region."
+                    },
+                    {
+                        text: "Microsoft Priva",
+                        detail: "<strong>Priva Privacy Risk Management:</strong> Identify personal data, assess privacy risks, automate privacy operations.<br><strong>Priva Subject Rights Requests:</strong> Automate DSAR (Data Subject Access Request) responses for GDPR and similar regulations."
+                    },
+                    {
+                        text: "Azure Policy & Resource Locks",
+                        detail: "<strong>Azure Policy:</strong> Enforce organizational standards (e.g., only deploy to certain regions, require tags). Deny non-compliant deployments.<br><strong>Resource Locks:</strong> <strong>ReadOnly</strong> — no changes. <strong>CanNotDelete</strong> — prevent accidental deletion. Applied at resource, resource group, or subscription level."
+                    }
+                ],
+                warnings: ["Service Trust Portal is different from Trust Center. STP = audit reports/compliance docs. Trust Center = general trust information page."],
+                verification: "<strong>Study Check:</strong> Can you list Microsoft's six privacy principles and explain what the Service Trust Portal provides?",
+                escalation: "Review Microsoft Learn: Describe the Service Trust Portal and privacy at Microsoft"
+            }
+        ]
     }
 };
