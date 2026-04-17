@@ -384,7 +384,7 @@
             docker: ['docker', 'docker-compose', 'container', 'image', 'pull', 'run', 'ps', 'exec', 'logs', 'volume', 'Dockerfile', 'build', 'yaml', 'cgroups', 'oom', 'oomkilled', 'l1', 'l2', 'l3', 'engine', 'cache', 'compose', 'prune'],
             commands: ['100', 'commands', 'cheat sheet', 'reference', 'cmd', 'directory'],
             ms102: ['ms-102', 'ms102', 'endpoint administrator', 'autopilot', 'intune', 'device enrollment', 'compliance policy', 'configuration profile', 'update rings', 'bitlocker', 'endpoint analytics', 'windows 365', 'cloud pc', 'win32 app'],
-            sc900: ['sc-900', 'sc900', 'security compliance identity', 'zero trust', 'entra id', 'azure ad', 'conditional access', 'defender for cloud', 'sentinel', 'purview', 'dlp', 'ediscovery', 'insider risk', 'compliance score', 'service trust', 'shared responsibility']
+            sc900: ['sc-900', 'sc900', 'security compliance identity', 'zero trust', 'entra id', 'azure ad', 'conditional access', 'defender for cloud', 'sentinel', 'purview', 'dlp', 'ediscovery', 'insider risk', 'compliance score', 'service trust', 'shared responsibility', 'antipattern', 'caf', 'cloud adoption framework', 'waf', 'well-architected', 'mcra', 'reference architecture', 'mcsb', 'security benchmark', 'assume breach', 'verify explicitly', 'least privilege', 'defense in depth']
         };
 
         for (const [catId, keywords] of Object.entries(categoryKeywords)) {

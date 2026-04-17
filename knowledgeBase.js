@@ -2844,6 +2844,192 @@ const KNOWLEDGE_BASE = {
                 warnings: ["Service Trust Portal is different from Trust Center. STP = audit reports/compliance docs. Trust Center = general trust information page."],
                 verification: "<strong>Study Check:</strong> Can you list Microsoft's six privacy principles and explain what the Service Trust Portal provides?",
                 escalation: "Review Microsoft Learn: Describe the Service Trust Portal and privacy at Microsoft"
+            },
+            {
+                id: "sc900-topic-11",
+                title: "Zero Trust — Deep Dive & Principles",
+                keywords: ["zero trust", "verify explicitly", "least privilege", "assume breach", "zero trust principles", "perimeter"],
+                symptoms: "<strong>Exam Domain:</strong> Describe the concepts of security, compliance, and identity<br><strong>Focus:</strong> Zero Trust is the #1 most tested security concept in SC-900",
+                steps: [
+                    {
+                        text: "What is Zero Trust?",
+                        detail: "<strong>Full Form:</strong> Zero Trust Security Model.<br><strong>Purpose:</strong> A security framework that says 'never trust, always verify' — every user, device, and network flow must be authenticated and authorized, even inside the corporate network.<br><br><strong>🏠 Real-World Analogy:</strong> Think of a hotel. Even after you enter the lobby (network), you still need a keycard for your room (app), the gym (resource), and the pool (data). Just being inside doesn't give you access to everything."
+                    },
+                    {
+                        text: "Three Core Principles (MEMORIZE THESE!)",
+                        detail: "<strong>1️⃣ Verify Explicitly:</strong> Always authenticate and authorize based on ALL available data — user identity, location, device health, service, data classification, anomalies.<br><br><strong>2️⃣ Least Privilege Access:</strong> Give users the MINIMUM permissions they need. Use <strong>Just-In-Time (JIT)</strong> and <strong>Just-Enough-Access (JEA)</strong>. Example: Don't make everyone a Global Admin — give them the specific role they need, only when they need it.<br><br><strong>3️⃣ Assume Breach:</strong> Design systems as if attackers are ALREADY inside. Minimize blast radius with segmentation. Verify end-to-end encryption. Use analytics to detect threats."
+                    },
+                    {
+                        text: "Why Zero Trust Exists",
+                        detail: "<strong>Old model (Perimeter Security):</strong> 'If you're inside the firewall, you're trusted.' This FAILS because: remote workers are outside the firewall, cloud apps aren't inside the network, attackers who get in have free movement.<br><br><strong>Zero Trust fixes this:</strong> Trust is NEVER assumed regardless of location. Every request is verified. This is critical for hybrid/remote work and cloud-first organizations."
+                    },
+                    {
+                        text: "Six Foundational Pillars",
+                        detail: "Zero Trust protects across 6 pillars:<br><strong>1) Identities</strong> — Verify users/service principals with MFA.<br><strong>2) Devices</strong> — Ensure device compliance before access.<br><strong>3) Applications</strong> — Control which apps are approved.<br><strong>4) Data</strong> — Classify, label, encrypt sensitive data.<br><strong>5) Infrastructure</strong> — Monitor VMs, containers, microservices for anomalies.<br><strong>6) Networks</strong> — Micro-segment networks, use real-time threat protection."
+                    },
+                    {
+                        text: "📝 SC-900 Exam Question",
+                        detail: "<strong>Q: Which Zero Trust principle recommends using Just-In-Time (JIT) access?</strong><br>A) Verify explicitly<br>B) Least privilege access ✅<br>C) Assume breach<br>D) Defense in depth<br><br><strong>Explanation:</strong> JIT means giving elevated access only when needed and only for a limited time. This is the essence of <strong>Least Privilege Access</strong>.<br><br><strong>⚠️ Exam Trap:</strong> Don't confuse Zero Trust with a product — it's a STRATEGY/MODEL, not a tool you install."
+                    }
+                ],
+                warnings: ["EXAM CRITICAL: Zero Trust is a STRATEGY, not a product. You don't 'install' Zero Trust — you implement it across identities, devices, apps, data, infrastructure, and networks."],
+                verification: "<strong>Study Check:</strong> Can you name all 3 Zero Trust principles AND all 6 foundational pillars from memory?",
+                escalation: "Review Microsoft Learn: Describe the Zero Trust model"
+            },
+            {
+                id: "sc900-topic-12",
+                title: "Common Security Antipatterns (What NOT To Do)",
+                keywords: ["antipatterns", "security mistakes", "bad practices", "what not to do", "common mistakes", "security traps"],
+                symptoms: "<strong>Exam Domain:</strong> Describe the concepts of security, compliance, and identity<br><strong>Focus:</strong> Understanding what NOT to do is as important as knowing what TO do",
+                steps: [
+                    {
+                        text: "What are Security Antipatterns?",
+                        detail: "<strong>Purpose:</strong> Common security mistakes that organizations repeatedly make, leading to breaches and vulnerabilities.<br><strong>Why it matters for SC-900:</strong> The exam tests whether you can identify WRONG approaches, not just right ones.<br><br><strong>🏠 Analogy:</strong> It's like driving — knowing the rules isn't enough. You also need to know what NOT to do (don't text and drive, don't run red lights)."
+                    },
+                    {
+                        text: "❌ Antipattern 1: Trusting the Network (Firewall-Only Security)",
+                        detail: "<strong>The Mistake:</strong> 'We have a firewall, so we're secure.' Relying ONLY on network perimeter defense.<br><strong>Why It's Wrong:</strong> Once an attacker bypasses the firewall (phishing, stolen VPN credentials), they have unrestricted access to everything inside.<br><strong>✅ The Fix:</strong> Implement <strong>Zero Trust</strong> — verify every user and device regardless of network location."
+                    },
+                    {
+                        text: "❌ Antipattern 2: Over-Privileged Accounts",
+                        detail: "<strong>The Mistake:</strong> Giving users Global Admin or Owner permissions 'just in case' or 'to make things easier.'<br><strong>Why It's Wrong:</strong> If one admin account is compromised, the attacker owns EVERYTHING.<br><strong>✅ The Fix:</strong> Use <strong>Least Privilege + PIM (Privileged Identity Management)</strong>. Assign minimum required roles. Use JIT access for admin tasks."
+                    },
+                    {
+                        text: "❌ Antipattern 3: No MFA / Password-Only Authentication",
+                        detail: "<strong>The Mistake:</strong> Relying only on passwords without Multi-Factor Authentication.<br><strong>Why It's Wrong:</strong> 99.9% of account compromise attacks can be blocked with MFA (Microsoft statistic).<br><strong>✅ The Fix:</strong> Enable <strong>MFA for ALL users</strong>, especially admins. Use <strong>passwordless methods</strong> (Windows Hello, FIDO2 keys) for strongest security."
+                    },
+                    {
+                        text: "📝 SC-900 Exam Question",
+                        detail: "<strong>Q: An organization relies solely on a corporate firewall for security. Users inside the network can access all resources without additional verification. Which security model should they adopt to improve security?</strong><br>A) Perimeter security model<br>B) Zero Trust model ✅<br>C) Shared responsibility model<br>D) Defense in depth only<br><br><strong>Explanation:</strong> The scenario describes a classic antipattern — trusting the network perimeter. <strong>Zero Trust</strong> requires verification regardless of network location.<br><br><strong>⚠️ Exam Trap:</strong> 'Defense in depth' is good but it's a layered approach, not a trust model. Zero Trust is the best answer when the question is about TRUST assumptions."
+                    }
+                ],
+                warnings: ["More antipatterns: Not monitoring/auditing, ignoring security alerts, sharing admin accounts, not training employees on phishing, no incident response plan."],
+                verification: "<strong>Study Check:</strong> Can you identify 5 security antipatterns and explain the correct approach for each?",
+                escalation: "Review Microsoft Learn: Describe security concepts and methodologies"
+            },
+            {
+                id: "sc900-topic-13",
+                title: "Cloud Adoption Framework (CAF)",
+                keywords: ["caf", "cloud adoption framework", "cloud strategy", "migration", "governance", "cloud adoption"],
+                symptoms: "<strong>Exam Domain:</strong> Describe the concepts of security, compliance, and identity<br><strong>Focus:</strong> Understanding Microsoft's guidance for MOVING to the cloud securely",
+                steps: [
+                    {
+                        text: "What is CAF?",
+                        detail: "<strong>Full Form:</strong> Cloud Adoption Framework.<br><strong>Purpose:</strong> Microsoft's step-by-step guide to help organizations move to the cloud successfully, securely, and efficiently. It's like a GPS for your cloud journey.<br><br><strong>🏠 Real-World Analogy:</strong> Building a house — CAF is the complete blueprint. You don't just start laying bricks. First you plan (foundation), then build (walls), then check safety (inspection). CAF gives you the phases and best practices."
+                    },
+                    {
+                        text: "CAF Phases (The Journey)",
+                        detail: "<strong>1) Strategy:</strong> Define WHY you're moving to cloud (cost savings, agility, innovation).<br><strong>2) Plan:</strong> Assess current environment, create migration plan, identify skills gaps.<br><strong>3) Ready:</strong> Set up Azure landing zones (networking, identity, governance foundations).<br><strong>4) Adopt:</strong> Two paths — <strong>Migrate</strong> (move existing apps) or <strong>Innovate</strong> (build new cloud-native apps).<br><strong>5) Govern:</strong> Establish policies, compliance, and cost management.<br><strong>6) Manage:</strong> Ongoing operations, monitoring, and optimization."
+                    },
+                    {
+                        text: "Where CAF is Used",
+                        detail: "CAF is used by: <strong>IT leaders</strong> planning cloud migrations, <strong>architects</strong> designing Azure environments, <strong>security teams</strong> implementing governance from day one. It ensures security is built INTO the cloud journey, not bolted on after.<br><br><strong>Key Point:</strong> The <strong>Govern</strong> and <strong>Manage</strong> phases specifically address security — setting policies, defining compliance requirements, monitoring threats."
+                    },
+                    {
+                        text: "CAF Security Highlights",
+                        detail: "<strong>Security is embedded in every phase:</strong><br>• Strategy: Define security requirements early<br>• Plan: Assess compliance needs (GDPR, HIPAA)<br>• Ready: Configure identity, networking, and security baselines in landing zones<br>• Govern: Enforce policies with Azure Policy, enable auditing<br>• Manage: Monitor with Defender for Cloud, set up incident response"
+                    },
+                    {
+                        text: "📝 SC-900 Exam Question",
+                        detail: "<strong>Q: Your organization wants to establish governance policies and compliance controls as part of their cloud migration. Which phase of the Cloud Adoption Framework addresses this?</strong><br>A) Strategy<br>B) Plan<br>C) Govern ✅<br>D) Ready<br><br><strong>Explanation:</strong> The <strong>Govern</strong> phase establishes policies, compliance controls, and cost management guardrails for cloud resources.<br><br><strong>⚠️ Exam Trap:</strong> CAF is a FRAMEWORK (guidance/best practices), not a product. You don't install CAF — you FOLLOW it."
+                    }
+                ],
+                warnings: ["CAF is GUIDANCE, not software. It tells you WHAT to do and in what order, but YOU choose the tools and services to implement it."],
+                verification: "<strong>Study Check:</strong> Can you name all 6 phases of CAF in order? (Strategy → Plan → Ready → Adopt → Govern → Manage)",
+                escalation: "Review Microsoft Learn: Microsoft Cloud Adoption Framework for Azure"
+            },
+            {
+                id: "sc900-topic-14",
+                title: "Azure Well-Architected Framework (WAF)",
+                keywords: ["waf", "well-architected framework", "five pillars", "reliability", "cost optimization", "architecture"],
+                symptoms: "<strong>Exam Domain:</strong> Describe the concepts of security, compliance, and identity<br><strong>Focus:</strong> Understanding the 5 pillars of excellent cloud architecture",
+                steps: [
+                    {
+                        text: "What is WAF?",
+                        detail: "<strong>Full Form:</strong> Azure Well-Architected Framework.<br><strong>Purpose:</strong> A set of 5 guiding principles (pillars) for building high-quality, reliable, and secure solutions on Azure. It helps architects make better design decisions.<br><br><strong>🏠 Real-World Analogy:</strong> If CAF is the GPS for your cloud JOURNEY, WAF is the architect's checklist for building each ROOM in your cloud house. Is it safe? Is it reliable? Is it cost-effective?"
+                    },
+                    {
+                        text: "The 5 Pillars of WAF (REMEMBER THESE!)",
+                        detail: "<strong>1) Reliability:</strong> Will it keep running? (redundancy, failure recovery, testing)<br><strong>2) Security:</strong> Is it protected? (Zero Trust, encryption, access control, threat detection)<br><strong>3) Cost Optimization:</strong> Are we spending wisely? (right-sizing, reserved instances, monitoring costs)<br><strong>4) Operational Excellence:</strong> Can we run it well? (monitoring, automation, DevOps practices, incident response)<br><strong>5) Performance Efficiency:</strong> Does it scale? (auto-scaling, load balancing, caching, CDN)<br><br><strong>Memory Trick: R-S-C-O-P</strong> (Reliability, Security, Cost, Operations, Performance)"
+                    },
+                    {
+                        text: "WAF vs CAF — Key Difference",
+                        detail: "<strong>CAF = Cloud Adoption Framework:</strong> Guides your JOURNEY to the cloud (migration strategy, governance, management). Think: PROCESS-focused.<br><br><strong>WAF = Well-Architected Framework:</strong> Guides how to BUILD things well on Azure (architecture quality). Think: QUALITY-focused.<br><br><strong>Simple Rule:</strong> CAF tells you HOW to get to the cloud. WAF tells you HOW to build great things once you're there."
+                    },
+                    {
+                        text: "The Security Pillar in Detail",
+                        detail: "The Security pillar covers:<br>• <strong>Identity management:</strong> Use Azure AD/Entra ID, MFA, Conditional Access<br>• <strong>Network protection:</strong> NSGs, Azure Firewall, DDoS protection<br>• <strong>Data protection:</strong> Encryption at rest and in transit<br>• <strong>Application security:</strong> Secure coding, vulnerability scanning<br>• <strong>Security monitoring:</strong> Defender for Cloud, Sentinel<br><br><strong>Key Principle:</strong> Security is NOT a separate step — it's baked into the architecture from day one."
+                    },
+                    {
+                        text: "📝 SC-900 Exam Question",
+                        detail: "<strong>Q: Which pillar of the Azure Well-Architected Framework focuses on protecting information systems and data?</strong><br>A) Reliability<br>B) Cost Optimization<br>C) Security ✅<br>D) Performance Efficiency<br><br><strong>Explanation:</strong> The <strong>Security</strong> pillar focuses on protecting information, systems, and assets through risk assessment, threat modeling, and security controls.<br><br><strong>⚠️ Exam Trap:</strong> WAF has 5 pillars. Don't confuse it with Azure Firewall (also abbreviated WAF for Web Application Firewall). In the SC-900 context, WAF = Well-Architected Framework."
+                    }
+                ],
+                warnings: ["Don't confuse WAF (Well-Architected Framework) with Azure WAF (Web Application Firewall). In SC-900, WAF refers to the framework with 5 pillars."],
+                verification: "<strong>Study Check:</strong> Can you name all 5 WAF pillars and explain how Security fits across the entire framework?",
+                escalation: "Review Microsoft Learn: Azure Well-Architected Framework"
+            },
+            {
+                id: "sc900-topic-15",
+                title: "Microsoft Cybersecurity Reference Architecture (MCRA)",
+                keywords: ["mcra", "cybersecurity reference architecture", "reference architecture", "security architecture", "blueprint"],
+                symptoms: "<strong>Exam Domain:</strong> Describe the concepts of security, compliance, and identity<br><strong>Focus:</strong> Understanding Microsoft's big-picture security architecture blueprint",
+                steps: [
+                    {
+                        text: "What is MCRA?",
+                        detail: "<strong>Full Form:</strong> Microsoft Cybersecurity Reference Architecture.<br><strong>Purpose:</strong> A set of visual diagrams that show how Microsoft's security products and services fit together to protect an organization. It's the 'big picture' map of Microsoft security.<br><br><strong>🏠 Real-World Analogy:</strong> MCRA is like the city planning map that shows where the police stations (Defender), fire departments (Incident Response), surveillance cameras (Sentinel), and security checkpoints (Conditional Access) are located and how they work together."
+                    },
+                    {
+                        text: "Why MCRA Exists",
+                        detail: "Microsoft has MANY security products: Defender for Endpoint, Sentinel, Entra ID, Purview, Intune, Defender for Cloud, etc. MCRA answers: <strong>'How do all these fit together?'</strong><br><br>It provides <strong>visual architecture diagrams</strong> showing:<br>• How products integrate with each other<br>• Which product protects which area (identity, endpoint, data, cloud)<br>• How signals flow between products for XDR (Extended Detection & Response)"
+                    },
+                    {
+                        text: "What MCRA Covers",
+                        detail: "MCRA includes reference diagrams for:<br>• <strong>Microsoft XDR:</strong> How M365 Defender products correlate signals<br>• <strong>SIEM + XDR:</strong> How Sentinel integrates with Defender suite<br>• <strong>Zero Trust architecture:</strong> Identity, network, data protection layers<br>• <strong>Multi-cloud security:</strong> Protecting Azure, AWS, GCP with Defender for Cloud<br>• <strong>Operational technology (OT):</strong> Securing IoT and industrial systems"
+                    },
+                    {
+                        text: "MCRA vs Other Frameworks",
+                        detail: "<strong>CAF:</strong> How to MIGRATE to cloud (process) <br><strong>WAF:</strong> How to BUILD well on Azure (quality pillars)<br><strong>MCRA:</strong> How Microsoft SECURITY products fit together (architecture map)<br><strong>MCSB:</strong> What specific CONTROLS to implement (benchmarks)<br><br><strong>Simple Rule:</strong> MCRA = the PICTURE showing all security pieces. MCSB = the CHECKLIST of what to configure."
+                    },
+                    {
+                        text: "📝 SC-900 Exam Question",
+                        detail: "<strong>Q: An organization wants to understand how Microsoft's security products work together to protect their environment. Which resource should they consult?</strong><br>A) Cloud Adoption Framework<br>B) Azure Well-Architected Framework<br>C) Microsoft Cybersecurity Reference Architecture (MCRA) ✅<br>D) Microsoft Cloud Security Benchmark<br><br><strong>Explanation:</strong> MCRA provides <strong>visual architecture diagrams</strong> showing how Microsoft security products integrate. CAF is for cloud migration, WAF is for architecture quality, and MCSB is for security controls.<br><br><strong>⚠️ Exam Trap:</strong> MCRA is REFERENCE guidance (diagrams + recommendations), not configuration steps. It shows the WHAT and WHY, not the HOW to click."
+                    }
+                ],
+                warnings: ["MCRA is a VISUAL GUIDE — architecture diagrams and recommendations. It's NOT a product, tool, or compliance checklist."],
+                verification: "<strong>Study Check:</strong> Can you explain what MCRA is, what it shows, and how it differs from CAF, WAF, and MCSB?",
+                escalation: "Review Microsoft Learn: Microsoft Cybersecurity Reference Architectures"
+            },
+            {
+                id: "sc900-topic-16",
+                title: "Microsoft Cloud Security Benchmark (MCSB)",
+                keywords: ["mcsb", "cloud security benchmark", "security benchmark", "cis benchmark", "security controls", "security baseline"],
+                symptoms: "<strong>Exam Domain:</strong> Describe the concepts of security, compliance, and identity<br><strong>Focus:</strong> Understanding Microsoft's actionable security controls checklist",
+                steps: [
+                    {
+                        text: "What is MCSB?",
+                        detail: "<strong>Full Form:</strong> Microsoft Cloud Security Benchmark (formerly Azure Security Benchmark / ASB).<br><strong>Purpose:</strong> A detailed set of <strong>security best practices and controls</strong> mapped to common compliance frameworks (CIS, NIST, PCI-DSS). It tells you EXACTLY what security settings to implement.<br><br><strong>🏠 Real-World Analogy:</strong> If MCRA is the architecture blueprint of your security building, MCSB is the safety inspection checklist — 'Is the fire alarm installed? ✅ Are the exits marked? ✅ Is the sprinkler system working? ✅'"
+                    },
+                    {
+                        text: "MCSB Control Domains",
+                        detail: "MCSB organizes security controls into domains:<br>• <strong>Network Security (NS):</strong> NSGs, Firewall, private endpoints<br>• <strong>Identity Management (IM):</strong> MFA, Conditional Access, PIM<br>• <strong>Privileged Access (PA):</strong> Admin account protection, JIT<br>• <strong>Data Protection (DP):</strong> Encryption, classification, DLP<br>• <strong>Asset Management (AM):</strong> Inventory, approved services<br>• <strong>Logging & Threat Detection (LT):</strong> Audit logs, Sentinel, alerts<br>• <strong>Incident Response (IR):</strong> Response plans, automation<br>• <strong>Posture & Vulnerability (PV):</strong> Vulnerability scanning, patching<br>• <strong>Backup & Recovery (BR):</strong> Backup policies, disaster recovery"
+                    },
+                    {
+                        text: "How MCSB Links to Defender for Cloud",
+                        detail: "MCSB is the <strong>DEFAULT security policy</strong> assigned in Microsoft Defender for Cloud. When you enable Defender for Cloud on a subscription, MCSB controls are automatically evaluated.<br><br>The <strong>Secure Score</strong> in Defender for Cloud is based on MCSB recommendations. Each recommendation maps to a specific MCSB control.<br><br><strong>Key Point:</strong> MCSB → generates recommendations → tracked by Secure Score → monitored in Defender for Cloud."
+                    },
+                    {
+                        text: "MCSB vs Other Standards",
+                        detail: "MCSB maps to industry benchmarks so you don't have to:<br>• <strong>CIS Benchmarks:</strong> Center for Internet Security hardening guides<br>• <strong>NIST 800-53:</strong> US government security controls<br>• <strong>PCI-DSS:</strong> Payment card industry data security<br><br><strong>Benefit:</strong> Implement MCSB once → automatically aligned with multiple compliance frameworks. One effort, many frameworks covered."
+                    },
+                    {
+                        text: "📝 SC-900 Exam Question",
+                        detail: "<strong>Q: Which Microsoft resource provides a set of security best practices and controls that are automatically evaluated by Microsoft Defender for Cloud?</strong><br>A) Cloud Adoption Framework<br>B) Microsoft Cybersecurity Reference Architecture<br>C) Microsoft Cloud Security Benchmark (MCSB) ✅<br>D) Azure Well-Architected Framework<br><br><strong>Explanation:</strong> MCSB is the <strong>default benchmark</strong> in Defender for Cloud. It provides specific, actionable security controls that Defender for Cloud evaluates to generate your Secure Score.<br><br><strong>⚠️ Exam Trap:</strong> MCSB was formerly called 'Azure Security Benchmark (ASB)'. If you see either name in study materials, they refer to the same thing — MCSB is the current name."
+                    }
+                ],
+                warnings: ["MCSB = the DEFAULT benchmark in Defender for Cloud. It was previously called Azure Security Benchmark (ASB). Both names may appear on the exam."],
+                verification: "<strong>Study Check:</strong> Can you explain how MCSB connects to Defender for Cloud and Secure Score? Can you name 4+ MCSB control domains?",
+                escalation: "Review Microsoft Learn: Microsoft Cloud Security Benchmark overview"
             }
         ]
     }
